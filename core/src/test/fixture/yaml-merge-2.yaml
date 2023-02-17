@@ -1,0 +1,9 @@
+
+class1:
+  prop1: happy2
+  prop3:
+   field1:
+    - golucky
+
+target:
+  stack: dev

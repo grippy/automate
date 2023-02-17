@@ -1,0 +1,93 @@
+
+workspace:
+  name: my-workspace
+  members: [./*]
+
+package:
+  name: my-package
+  description: |
+    A fixture example used for testing purposes only.
+  version: "0.0.0"
+  permissions:
+    - allow-all
+
+dependencies:
+  provider:
+    name1:
+      path: "../name1/mod.ts"
+    name2: "../name2/mod.ts"
+  recipe:
+    build-app: "../recipe/build-app/mod.ts"
+    install-app:
+      path: "../recipe/install-app/mod.ts"
+  template:
+    helpers:
+      $: "../utils/mod.ts"
+
+values:
+  key1: value1
+  key2: value2
+  recipe:
+    install-app:
+      values:
+        - ./values.yaml
+        - ./values/{{ values.env }}.yaml
+    build-app:
+      values:
+        - ./values.yaml
+        - ./values/{{ values.env }}.yaml
+
+provider:
+  types:
+      MyType1:
+        key1: string
+        key2: number
+      MyType2:
+        key1: string
+        key2: number
+  commands:
+      cmd1:
+        async: true
+        description: |
+          cmd1 is awesome
+        in: MyType1
+        out: void
+      cmd2:
+        in: MyType2
+        out: void
+
+recipe:
+  steps:
+    setup:
+      - cmd: provider/name1/get
+        in:
+          arg1: "{{ values.key1 | $.utils.fn1 }}"
+        out: state.key1
+      - cmd: provider/name1/list
+        in:
+          arg1: "{{ values.key2 }}"
+        out: state.mylist
+      - cmd: provider/values/merge
+        in:
+          files: "{{ values.build-app.values }}"
+        out: "build-app.values"
+
+    build-app:
+      - description: build app now
+        cmd: recipe/build-app/call
+        in:
+          values: "{{ state.build-app.values }}"
+
+    install-app:
+      - description: |
+          "alternate way to run programs"
+        cmd: provider/exec/bash
+        in:
+          values:
+            yaml: "{{ values | toYAML}}"
+            json: "{{ values | toJSON}}"
+
+        template: |
+          automate recipe {{ step.name }} run \
+            --value={{ values.{{ step.name }}.values[0] }}
+            --value={{ values.{{ step.name }}.values[1] }}

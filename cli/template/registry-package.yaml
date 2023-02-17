@@ -1,0 +1,10 @@
+# automate-generated file: {{ registry_file }}
+type: "{{ package.type }}"
+name: "{{ package.name }}@{{ package.version }}"
+description: |
+  {{ package.description }}
+permissions: {{~ JSON.stringify(package.permissions ) }}
+{{~ provider }}
+package_file: "{{ package_file }}"
+package_mod: "{{ package_mod }}"
+cli_mod: "{{ cli_mod }}"

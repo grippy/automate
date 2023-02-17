@@ -1,0 +1,10 @@
+mytest:
+  a: b
+  b: 1
+---
+mytest:
+  a: b
+  b: "1"
+---
+mytest:
+  a: b

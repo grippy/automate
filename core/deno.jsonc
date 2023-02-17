@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strictPropertyInitialization": false
+  },
+  "importMap": "./import_map.json",
+  "tasks": {
+    "clean": "make clean",
+    "test": "deno test --allow-read --allow-env .",
+    "dev": "deno run --watch ./src/main.ts"
+  }
+}
