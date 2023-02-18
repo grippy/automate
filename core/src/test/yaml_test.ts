@@ -2,11 +2,14 @@ import * as asserts from 'https://deno.land/std@0.174.0/testing/asserts.ts';
 import { ToInstance, Type } from '../record.ts';
 import { load, loadAll, mergeLoad } from '../yaml.ts';
 
+// current directory for this file
+const dirname = new URL('.', import.meta.url).pathname;
+
 ///////////////////////////////////////
 // Test loading yaml to classes
 ///////////////////////////////////////
-const DOCUMENT = './src/test/fixture/yaml-test.yaml';
-const DOCUMENTS = './src/test/fixture/yaml-test-multiple.yaml';
+const DOCUMENT = `${dirname}fixture/yaml-test.yaml`;
+const DOCUMENTS = `${dirname}fixture/yaml-test-multiple.yaml`;
 
 class MyTest {
   a!: string | null;
@@ -45,8 +48,8 @@ Deno.test(
 Deno.test(
   async function testMergeLoad() {
     const merged1 = await mergeLoad([
-      './src/test/fixture/yaml-merge-1.yaml',
-      './src/test/fixture/yaml-merge-2.yaml',
+      `${dirname}fixture/yaml-merge-1.yaml`,
+      `${dirname}fixture/yaml-merge-2.yaml`,
     ]);
     // console.log('merged1', merged1);
     asserts.assertEquals(merged1.class1.prop1, 'happy2');
@@ -56,9 +59,9 @@ Deno.test(
     asserts.assertEquals(merged1.target.stack, 'dev');
 
     const merged2 = await mergeLoad([
-      './src/test/fixture/yaml-merge-1.yaml',
-      './src/test/fixture/yaml-merge-2.yaml',
-      './src/test/fixture/yaml-merge-3.yaml',
+      `${dirname}fixture/yaml-merge-1.yaml`,
+      `${dirname}fixture/yaml-merge-2.yaml`,
+      `${dirname}fixture/yaml-merge-3.yaml`,
     ]);
     // console.log('merged2', merged2);
     asserts.assertEquals(merged2.class1.prop1, 'happy2');

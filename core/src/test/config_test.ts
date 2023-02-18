@@ -4,6 +4,9 @@ import * as logging from '../logging.ts';
 import { Expose, ToInstance, Type } from '../record.ts';
 import { load } from '../yaml.ts';
 
+// current directory for this file
+const dirname = new URL('.', import.meta.url).pathname;
+
 const log = logging.Category('config.test');
 
 const testAutomateConfig = function(plain: any) {
@@ -60,7 +63,7 @@ const testAutomateConfig = function(plain: any) {
 
 Deno.test(
   async function testLoad() {
-    const plain = await load('./src/test/fixture/Automate.yaml');
+    const plain = await load(`${dirname}fixture/Automate.yaml`);
     testAutomateConfig(plain);
   },
 );

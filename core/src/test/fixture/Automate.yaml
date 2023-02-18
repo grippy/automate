@@ -1,29 +1,44 @@
+# This file is how we test configuration parsing.
+# This is currently the only reference file
+# around Automate.yaml configuration options.
 
+# A workspace is a collection of members
+# which point to a directory where an Automate.yaml
+# file lives.
 workspace:
   name: my-workspace
   members: [./*]
 
+# ------
+
+# A package is we make things modular.
 package:
   name: my-package
   description: |
     A fixture example used for testing purposes only.
   version: "0.0.0"
+  # Deno permissions requirements for running the package.
   permissions:
     - allow-all
 
+# A package defines dependencies (which are pointers
+# to other Automate packages we need to cache) it requires
+# for running commands.
 dependencies:
   provider:
     name1:
-      path: "../name1/mod.ts"
-    name2: "../name2/mod.ts"
+      path: "../name1"
+    name2: "../name2"
   recipe:
-    build-app: "../recipe/build-app/mod.ts"
+    build-app: "../recipe/build-app"
     install-app:
-      path: "../recipe/install-app/mod.ts"
+      path: "../recipe/install-app"
   template:
     helpers:
       $: "../utils/mod.ts"
 
+# A package defines default input values
+# used for calling package commands with
 values:
   key1: value1
   key2: value2
@@ -37,7 +52,13 @@ values:
         - ./values.yaml
         - ./values/{{ values.env }}.yaml
 
+# `Provider` type packages may define (super helpful
+# but not required):
+# - command names and input and output types.
+# - runtime environment variables
 provider:
+  env:
+    ENV1: default
   types:
       MyType1:
         key1: string
@@ -56,6 +77,9 @@ provider:
         in: MyType2
         out: void
 
+# `Recipe` package types define steps of tasks.
+# Tasks issue provider command calls.
+# (This is still TBD)
 recipe:
   steps:
     setup:

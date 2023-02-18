@@ -1,65 +1,10 @@
-/**
- *
-Automate.yaml:
-    workspace:
-      name: string
-      members: string[]
-    ---
-    package:
-      name: mypackage
-      version: 1.0.0
-
-    stack:
-        dev:
-            hook:
-                one
-            runtime:
-                other
-            dependencies:
-                name1:
-    hook:
-        runtime:
-            before-run:
-            after-run:
-            before-install:
-            after-install:
-            before-upgrade:
-            after-upgrade:
-    cli:
-        cmd1:
-        cmd2:
-        cmd3:
-
-    runtime:
-        python-venv:
-            python: 3.10
-            name: ./venv
-            requirements: ./requirements.txt
-        python-poetry:
-            file: ./poetry-file
-        deno:
-            version: 123
-        rust:
-            version: 123
-
-    capabilities:
-        - allow-net
-        - allow-stuff
-
-    dependencies:
-        name1:
-            url: http://my.org/repo@v1.0.0
-            version: 1.0.0
-            path: "../"
-
----
-AutomateCli.yaml: |
-    home: ~/.automate
-    cache: ~/.automate/version/{cli-version}/.cache
-
-*/
-
 import { ToInstance, Transform, Type } from './record.ts';
+
+/**
+ * This file describes how to parse Automate.yaml files.
+ * We have a couple of cases where we need to manually coerce
+ * types from object/maps into Classes defined here.
+ */
 
 /**
  * Values
@@ -180,7 +125,12 @@ class Provider {
 
   @Type(() => ProviderCmds)
   commands: ProviderCmds = new ProviderCmds();
+
+  @Type(() => ProviderEnv)
+  env: ProviderEnv = new Map();
 }
+
+class ProviderEnv extends Map<string, string> {}
 
 class ProviderDataTypes extends Map<string, ProviderDataType> {}
 class ProviderDataType extends Map<string, string> {}
