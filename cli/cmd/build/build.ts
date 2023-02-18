@@ -95,10 +95,11 @@ const buildWorkspace = async (
 /**
  * @param packageFile
  *
- * Building a package does the following:
+ * Building a package file does the following:
  * - Creates ~/.automate directory
  * - Copies package/Automate.yaml => ~/.automate/cache/{name}@{version}/Automate.yaml
- * - Creates cli wrapper ~/.automate/cache/{name}@{version}/mod.ts
+ * - Creates ~/.automate/cache/{name}@{version}/values.yaml from `package.values`
+ * - Creates cli module ~/.automate/cache/{name}@{version}/mod.ts
  * - Creates registry entry ~/.automate/registry/{name}@{version}.yaml
  *    - This contains meta details about the package and pointers to the cache mod.ts
  */
@@ -144,10 +145,18 @@ const buildPackage = async (packageFile: string) => {
   const packageVersion = `${pkg.name}@${pkg.version}`;
   const packageCacheDir = `${automateCacheDir}/${packageVersion}`;
   const packageCachePackageConfigFileName = `${packageCacheDir}/Automate.yaml`;
+  const packageCachePackageValuesFileName = `${packageCacheDir}/values.yaml`;
 
   const packageCachePackageFileName = `${packageCacheDir}/mod.ts`;
   const packageRegistryFileName =
     `${automateRegistryDir}/${packageVersion}.yaml`;
+
+  // generate values.yaml file..
+  // we remove the top-level `values:` object
+  let values = {};
+  if (cfg.values !== undefined) {
+    values = cfg.values;
+  }
 
   // convert provider types/commands to yaml
   let provider = '';
@@ -173,6 +182,7 @@ const buildPackage = async (packageFile: string) => {
     package: pkg,
     provider: provider,
     package_file: packageFile,
+    package_values_file: packageCachePackageValuesFileName,
     registry_file: packageRegistryFileName,
     automate_core_mod: automateCoreModPath,
     package_mod: packageMod,
@@ -200,6 +210,12 @@ const buildPackage = async (packageFile: string) => {
   Deno.writeTextFileSync(packageCachePackageFileName, packageCachePackageFile);
   log.info(`Building package registry file ${packageRegistryFileName}`);
   Deno.writeTextFileSync(packageRegistryFileName, packageRegistryFile);
+
+  log.info(`Writing package values into ${packageCachePackageValuesFileName}`);
+  Deno.writeTextFileSync(
+    packageCachePackageValuesFileName,
+    yaml.stringify(values),
+  );
 
   console.log(cfg);
 

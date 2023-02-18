@@ -1,1 +1,2 @@
-# automate
+# Automate
+Details will come later...

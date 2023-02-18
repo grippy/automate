@@ -22,13 +22,13 @@ const main = new Command()
   // build
   .command('build', build)
   .description('build workspaces, providers, and recipes')
-  // provider
+  // provider sub-commands
   .command('provider', provider)
   .description('provider management commands')
-  // recipe
+  // recipe sub-commands
   .command('recipe', recipe)
   .description('recipe management commands')
-  // workspace
+  // workspace sub-commands
   .command('workspace', workspace)
   .description('workspace management commands')
   .parse(Deno.args);

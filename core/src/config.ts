@@ -164,6 +164,7 @@ class RegistryPackage {
   package!: Package;
   provider!: string;
   package_file!: string;
+  package_values_file!: string;
   registry_file!: string;
   automate_core_mod!: string;
   cli_mod!: string;

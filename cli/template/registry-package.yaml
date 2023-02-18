@@ -6,5 +6,6 @@ description: |
 permissions: {{~ JSON.stringify(package.permissions ) }}
 {{~ provider }}
 package_file: "{{ package_file }}"
+package_values_file: "{{ package_values_file }}"
 package_mod: "{{ package_mod }}"
 cli_mod: "{{ cli_mod }}"
