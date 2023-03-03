@@ -50,6 +50,7 @@ const action = async (options: any, cmd: string) => {
 // TODO: figure out how to deal with output values
 const main = new Command()
   .name(cliName)
+  .version('{{ package.version }}')
   .arguments('<cmd:string>')
   .option(
     '-f, --value <value:string>',
