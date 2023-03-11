@@ -61,7 +61,9 @@ const setupAutomateDirs = () => {
   mkDirs(dirs);
 };
 
+// TODO: move this to a separate command
 const cleanCacheDir = () => {
+  // `automate clean` should clean the entire `.automate` directory
 };
 
 /**
@@ -77,7 +79,7 @@ const buildWorkspace = async (
 
   // validate members...
   if (members.length === 0) {
-    throw new Error('Workspace ');
+    throw new Error('Workspace has no members');
   }
   // convert members to absolute paths
   const memberPaths = members.map(Deno.realPathSync);

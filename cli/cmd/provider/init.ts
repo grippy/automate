@@ -1,4 +1,6 @@
+import { pascalCase } from 'https://deno.land/x/case/mod.ts';
 import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
+
 import { logging, template } from '../../../core/src/mod.ts';
 import { automateCoreModPath } from '../../constants.ts';
 
@@ -7,6 +9,7 @@ const log = logging.Category('automate.provider');
 // current directory
 const dirname = new URL('.', import.meta.url).pathname;
 
+// Automate.yaml example template
 const automateConfigFileName = 'Automate.yaml';
 const automateConfig = `
 # Package details...
@@ -47,6 +50,8 @@ dependencies:
 
 # Default values go here...
 values:
+  env:
+    HELLO: world
   key1: value1
 
 # Provider types and command map
@@ -68,11 +73,14 @@ provider:
       out: MyType2
 `;
 
+/* git ignore file */
 const gitIgnoreFileName = '.gitignore';
 const gitIgnore = `
 .automate/
 `;
 
+/* deno config */
+// TODO: add some default tasks here
 const denoJsonFileName = 'deno.jsonc';
 const denoJson = `
 {
@@ -83,6 +91,8 @@ const denoJson = `
 }
 `;
 
+/* import map */
+// TODO: do we need this?
 const importMapFileName = 'import_map.json';
 const importMap = `
 {
@@ -90,14 +100,22 @@ const importMap = `
 }
 `;
 
+/* README */
 const readmeFileName = 'README.md';
 const readme = `
 # Provider: {{ name }}
 `;
 
+/* New provider module */
 const packageModuleFileName = 'mod.ts';
 const packageModuleFileTemplate: string = Deno.readTextFileSync(
   `${dirname}/../../template/provider-mod.ts`,
+);
+
+/* New provider module test */
+const packageModuleTestFileName = 'mod_test.ts';
+const packageModuleTestFileTemplate: string = Deno.readTextFileSync(
+  `${dirname}/../../template/provider-mod-test.ts`,
 );
 
 /**
@@ -185,7 +203,19 @@ const action = (options: any, path: string) => {
     {
       fileName: `${path}/${packageModuleFileName}`,
       file: packageModuleFileTemplate,
-      data: { automate_core_mod: automateCoreModPath },
+      data: {
+        automate_core_mod: automateCoreModPath,
+        className: `Provider${pascalCase(name)}`,
+        name: name,
+      },
+    },
+    {
+      fileName: `${path}/${packageModuleTestFileName}`,
+      file: packageModuleTestFileTemplate,
+      data: {
+        className: `Provider${pascalCase(name)}`,
+        name: name,
+      },
     },
   ];
 

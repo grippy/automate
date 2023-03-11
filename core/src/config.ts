@@ -125,14 +125,10 @@ class Provider {
 
   @Type(() => ProviderCmds)
   commands: ProviderCmds = new ProviderCmds();
-
-  @Type(() => ProviderEnv)
-  env: ProviderEnv = new Map();
 }
 
-class ProviderEnv extends Map<string, string> {}
-
 class ProviderDataTypes extends Map<string, ProviderDataType> {}
+
 class ProviderDataType extends Map<string, string> {}
 
 class ProviderCmds extends Map<string, ProviderCmd> {
@@ -155,6 +151,7 @@ class ProviderCmds extends Map<string, ProviderCmd> {
     this.converted = true;
   }
 }
+
 class ProviderCmd {
   async: boolean = false;
   description: string = '';

@@ -38,8 +38,12 @@ dependencies:
       $: "../utils/mod.ts"
 
 # A package defines default input values
-# used for calling package commands with
+# used for calling package commands with..
+# This is also where we can define "ENV" variables
+# required for Provider instantiation
 values:
+  env:
+    ENV1: default
   key1: value1
   key2: value2
   recipe:
@@ -57,25 +61,23 @@ values:
 # - command names and input and output types.
 # - runtime environment variables
 provider:
-  env:
-    ENV1: default
   types:
-      MyType1:
-        key1: string
-        key2: number
-      MyType2:
-        key1: string
-        key2: number
+    MyType1:
+      key1: string
+      key2: number
+    MyType2:
+      key1: string
+      key2: number
   commands:
-      cmd1:
-        async: true
-        description: |
-          cmd1 is awesome
-        in: MyType1
-        out: void
-      cmd2:
-        in: MyType2
-        out: void
+    cmd1:
+      async: true
+      description: |
+        cmd1 is awesome
+      in: MyType1
+      out: void
+    cmd2:
+      in: MyType2
+      out: void
 
 # `Recipe` package types define steps of tasks.
 # Tasks issue provider command calls.

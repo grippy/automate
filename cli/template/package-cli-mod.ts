@@ -20,6 +20,9 @@ const isAsync = (fn: Function): boolean => {
 };
 
 const action = async (options: any, cmd: string) => {
+  // debug ENV variables
+  log.debug(`Current ENV variables ${JSON.stringify(Deno.env.toObject())}`);
+
   // Take values paths and merge them
   const valueFiles = [packageValuesFile].concat(options.value || []);
   log.debug('Merging value files', valueFiles);
@@ -35,22 +38,39 @@ const action = async (options: any, cmd: string) => {
   const provider: prov.Provider = await initializeProvider();
   log.info(`Calling ${cmd}`);
 
+  const callCmd = provider[cmd];
+  // does this cmd exist?
+  if (callCmd === undefined) {
+    throw new Error(`Provider ${packageName} has no command named ${cmd}`);
+  }
+
   // is this method async?
-  const call = provider[cmd];
-  if (isAsync(call)) {
-    const result = await call(values);
+  let result: any = null;
+  if (isAsync(callCmd)) {
+    result = await callCmd(values);
+    if (typeof result === 'object') {
+      result = JSON.stringify(result);
+    }
     log.info(`Output: ${result}`);
   } else {
-    const result = call(values);
+    result = callCmd(values);
+    if (typeof result === 'object') {
+      result = JSON.stringify(result);
+    }
     log.info(`Output: ${result}`);
   }
+  // TODO: use --output-file to write to disk?
 };
 
-// TODO: add --input-format --output-format options
+// TODO: add --input-format option
+// TODO: add --output-format option
+// TODO: add --output-file option for writing to cmd result to disk
+
 // TODO: figure out how to deal with output values
 const main = new Command()
   .name(cliName)
   .version('{{ package.version }}')
+  .description('Run package')
   .arguments('<cmd:string>')
   .option(
     '-f, --value <value:string>',
@@ -59,8 +79,7 @@ const main = new Command()
       collect: true,
     },
   )
-  .option('-o, --output <output:string>', 'Write output to file')
-  .description('Run package')
+  .option('-o, --output=<output:string>', 'Write output to file')
   .action(action)
   .parse(Deno.args);
 

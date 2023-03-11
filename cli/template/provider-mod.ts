@@ -1,4 +1,7 @@
-import { provider } from '{{ automate_core_mod }}';
+import { logging, provider } from '{{ automate_core_mod }}';
+
+// create logger
+const log = logging.Category('{{ name }}');
 
 // This is an example provider to get you started
 // Provider functions have the following characteristics.
@@ -8,32 +11,32 @@ import { provider } from '{{ automate_core_mod }}';
 
 type Values = Record<string, unknown>;
 
-class MyProvider implements provider.Provider {
+class {{ className }} implements provider.Provider {
   constructor() {}
 
   async cmd1(values: Values): Promise<string> {
-    console.log('cmd1 called w/', values);
+    log.debug('cmd1 called w/', values);
     return Promise.resolve('OK');
   }
 
   async cmd2(values: Values): Promise<Values> {
-    console.log('cmd2 called w/', values);
+    log.debug('cmd2 called w/', values);
     return Promise.resolve({ key1: 'value1' });
   }
 
   async cmd3(): Promise<void> {
-    console.log('cmd3 called');
+    log.info('cmd3 called');
     return Promise.resolve();
   }
 
   cmd4(): void {
-    console.log('cmd1 called');
+    log.info('cmd1 called');
   }
 }
 
 // All providers must export this function...
 const initializeProvider = async (): Promise<provider.Provider> => {
-  const instance = new MyProvider();
+  const instance = new {{ className }}();
   return Promise.resolve(instance);
 };
 
