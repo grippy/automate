@@ -4,6 +4,7 @@
     "deno.codeLens.referencesAllFunctions": false,
     "deno.codeLens.test": false,
     "deno.enable": true,
+    "deno.lint": true,
     "deno.inlayHints.enumMemberValues.enabled": true,
     "deno.inlayHints.functionLikeReturnTypes.enabled": false,
     "deno.inlayHints.parameterNames.enabled": "all",
@@ -13,7 +14,7 @@
     "deno.inlayHints.variableTypes.enabled": false,
     "deno.inlayHints.variableTypes.suppressWhenTypeMatchesName": false,
     "deno.suggest.completeFunctionCalls": true,
-    "deno.importMap": "./automate/core/import_map.json",
+    "deno.importMap": "./core/import_map.json",
 
     "[javascript]": {
         "editor.defaultFormatter": "dprint.dprint",
