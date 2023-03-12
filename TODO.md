@@ -6,6 +6,11 @@
 - [x] Packages should define a namespace
 - [x] Packages should name registry package entries as type.namespace.name@version
 - [x] Package names and namespaces need character validation (a-zA-Z0-9-.)
+- [x] Automate.yaml should define default `values.env` section for provider/recipes
+- [x] Automate.yaml should define provider commands with input/output types
+
+# `automate provider show`
+- [x] add cli command and display package registry details
 
 # `automate test`
 - [x] Generate `deno test --allow-env ... path` for workspace/packages (pass deno test options through)
@@ -13,29 +18,31 @@
 # `automate clean`
 - [x] clan the AUTOMATE_ROOT directory
 
-# Automate.yaml
-- [x] Should define default `values.env` section for provider/recipes
+# `automate provider run`
+- [x] Add values parsing with flags
+- [x] Generate `deno run` command along with permissions and env vars for calling provider cli wrapper
 
-# Package Stuff
-- [x] Add provider commands with types to Automate.yaml
-    - [ ] Surface these commands when calling `automate provider list`
+# TODO
+
+## Automate.yaml
+
+## Package Stuff
 - [ ] Publish release version 0.0.0 as git tag
 - [ ] Publish `automate-examples` project
 - [ ] Build packages stored on the web
 
+## CLI Stuff
 
-# CLI Stuff
-## `automate provider run`
-- [x] Add values parsing with flags
+### Provider
 - [ ] Use files to store provider output
 
-## Refactor
-- [ ] Move automate config loading somewhere else
+### Refactor
+- [ ] Move copy/paste automate config loading somewhere else
 
-## `automate build`
+### Recipes
 - [ ] Ideate how building/running recipes should work
 
-## `automate` ENV variables
+### `automate` ENV variables
 - [ ] `AUTOMATE_TMP` (automate temp directory for where to store output files)
 
 # Inline todo's in the project
