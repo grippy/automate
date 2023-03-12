@@ -64,11 +64,6 @@ const setupAutomateDirs = () => {
   mkDirs(dirs);
 };
 
-// TODO: move this to a separate command
-const cleanCacheDir = () => {
-  // `automate clean` should clean the entire `.automate` directory
-};
-
 /**
  * BuildWorkspace
  * @param workspace
