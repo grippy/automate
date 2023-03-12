@@ -89,6 +89,6 @@ const action = async (_options: any, name: string) => {
 export const show = new Command()
   .arguments('<name:string>')
   .description(
-    'Show provider package details for name@version stored in the registry',
+    'Show provider package details for package name (i.e. type.namespace.name@version) stored in the registry',
   )
   .action(action);

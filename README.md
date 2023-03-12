@@ -54,6 +54,10 @@ The `automate` cli features a few useful commands for jumping into things.
 
 - `automate build`: This command iterates and caches workspace members and/or package dependencies. It also creates local CLI wrappers for all provider dependencies or generates code for recipes.
 
+## Clean Command
+
+- `automate clean`: This command cleans the $AUTOMATE_ROOT directory.
+
 ## Test Command
 
 - `automate test`: This command generates `deno test` commands across a workspace or package.

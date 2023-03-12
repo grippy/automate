@@ -29,6 +29,9 @@
 - [x] Add values parsing with flags
 - [ ] Use files to store provider output
 
+## Refactor
+- [ ] Move automate config loading somewhere else
+
 ## `automate build`
 - [ ] Ideate how building/running recipes should work
 
