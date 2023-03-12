@@ -8,6 +8,19 @@ Recipes construct templated steps for running provider commands. (How this works
 
 Both providers and recipes are written as Automate "packages" to make code reuse easy.
 
+# Inspiration
+
+Do you ever find yourself repeating tasks across multiple repos or file systems? System or DevOps types tasks come mind here. 
+
+Automate draws inspiration from the following things:
+
+- Deno for its amazing features
+- Puppet/Chef/Ansible for manipulating servers or Terraform for the cloud
+- GitHub actions and similar YAML/config driven tools
+- Cargo packages for workspaces and package definitions
+- Helm/Hiera for hierarchical values as inputs
+- OpenAPI spec/code generation
+
 # Dependencies
 
 Automate currently only has one dependency which is Deno. This enables executing TypeScript inside the Deno runtime.
@@ -15,18 +28,6 @@ Automate currently only has one dependency which is Deno. This enables executing
 Deno uses V8 under the hood and features permission based sand-boxing (for example: reading/writing to disk, making networks calls, reading env variables, etc).
 
 Deno installs modules at runtime (sourced locally or from the web) and caches missing modules locally (both similar to how Go works).
-
-# Inspiration
-
-Do you ever find yourself repeating tasks across multiple repos or file systems? While this tool could be useful for DevOps
-
-Automate draws inspiration from the following things:
-
-- Deno for its amazing features
-- GitHub actions and similar YAML/config driven tools
-- Cargo packages for workspaces and package definitions
-- Helm/Hiera for hierarchical values as inputs
-- OpenAPI spec/code generation
 
 # Automate Packages
 
