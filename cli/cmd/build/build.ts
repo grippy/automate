@@ -12,12 +12,15 @@ import * as constants from '../../constants.ts';
 const log = logging.Category('automate.build');
 
 // constants used to build packages
-const configFileName = constants.configFileName;
-const configFile = constants.configFile;
-const automateRootDir = constants.automateRootDir;
 const automateCacheDir = constants.automateCacheDir;
-const automateRegistryDir = constants.automateRegistryDir;
 const automateCoreModPath = constants.automateCoreModPath;
+const automateRegistryDir = constants.automateRegistryDir;
+const automateRootDir = constants.automateRootDir;
+const automatePackageNamespaceVerifier =
+  constants.automatePackageNamespaceVerifier;
+const automatePackageNameVerifier = constants.automatePackageNameVerifier;
+const configFile = constants.configFile;
+const configFileName = constants.configFileName;
 
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
@@ -122,16 +125,40 @@ const buildPackage = async (packageFile: string) => {
   // setup automate directory structures
   setupAutomateDirs();
 
-  // make dir for package
+  // check if package exists
   if (cfg.package === undefined) {
     throw new Error('Package missing package definition');
   }
+
+  // we should have a package name
   const pkg = cfg.package;
-  if (pkg.name === undefined) {
+
+  // we should have a package namespace
+  if (pkg.namespace === undefined || pkg.namespace === null) {
+    throw new Error(
+      'Package namespace is missing',
+    );
+  }
+  // verify namespace naming convention
+  if (!automatePackageNamespaceVerifier.test(pkg.namespace)) {
+    throw new Error(
+      'Package namespace should only contain alpha-numeric characters or periods. Namespace must not start or end with periods.',
+    );
+  }
+
+  if (pkg.name === undefined || pkg.name === null) {
     throw new Error(
       'Package name is missing',
     );
   }
+
+  // verify name naming convention
+  if (!automatePackageNameVerifier.test(pkg.name)) {
+    throw new Error(
+      'Package name should only contain alpha-numeric characters, periods, dashes, or underscores. Name must not start or end with periods, dashes, or underscores.',
+    );
+  }
+
   if (pkg.type === undefined || ['recipe', 'provider'].indexOf(pkg.type) < 0) {
     throw new Error(
       `
@@ -143,12 +170,11 @@ const buildPackage = async (packageFile: string) => {
   // we need the path to the package module
   const packagePath = packageFile.replace(`/${configFileName}`, '');
   const packageMod = `${packagePath}/mod.ts`;
-
-  const packageVersion = `${pkg.name}@${pkg.version}`;
+  const packageVersion =
+    `${pkg.type}.${pkg.namespace}.${pkg.name}@${pkg.version}`;
   const packageCacheDir = `${automateCacheDir}/${packageVersion}`;
   const packageCachePackageConfigFileName = `${packageCacheDir}/Automate.yaml`;
   const packageCachePackageValuesFileName = `${packageCacheDir}/values.yaml`;
-
   const packageCachePackageFileName = `${packageCacheDir}/mod.ts`;
   const packageRegistryFileName =
     `${automateRegistryDir}/${packageVersion}.yaml`;
@@ -264,7 +290,8 @@ const buildDep = async (
     }
 
     // TODO: handle http urls
-    // we have a path to install... check if it exists...
+    // we have a path to install... c
+    // check if it exists...
     // is this path relative?
     let pathPrefix = '';
     if (path.startsWith('..')) {

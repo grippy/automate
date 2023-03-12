@@ -6,12 +6,11 @@ import { initializeProvider } from '{{ package_mod }}';
 // package variables
 const packageFile = '{{ package_file }}';
 const packageValuesFile = '{{ package_values_file }}';
-const packageType = '{{ package.type }}';
-const packageName = '{{ package.name }}@{{ package.version }}';
-const cliName = `${packageType}/${packageName}`;
+const packageName =
+  '{{ package.type }}.{{ package.namespace }}.{{ package.name }}@{{ package.version }}';
 
 // cli logger
-const log = logging.Category(`${packageType}.${packageName}`);
+const log = logging.Category(packageName);
 
 // test if cmd is async or not...
 const AsyncFunction = (async () => {}).constructor;
@@ -68,7 +67,7 @@ const action = async (options: any, cmd: string) => {
 
 // TODO: figure out how to deal with output values
 const main = new Command()
-  .name(cliName)
+  .name(packageName)
   .version('{{ package.version }}')
   .description('Run package')
   .arguments('<cmd:string>')

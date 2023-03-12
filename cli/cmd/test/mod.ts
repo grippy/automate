@@ -27,7 +27,6 @@ const loadAutomateConfig = async (
 const action = async (
   options: any,
 ) => {
-  console.log(options);
   // load the Automate config in the current directory
   const cfg = await loadAutomateConfig(configFile)
     .catch(err => {

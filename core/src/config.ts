@@ -87,7 +87,10 @@ class Dependency {
  * Workspace
  */
 class Workspace {
+  // name of this workspace
   name!: string;
+  // a list of paths pointing to packages
+  // under this workspace
   members!: Array<string>;
 }
 
@@ -95,10 +98,17 @@ class Workspace {
  * Package
  */
 class Package {
+  // type of package (provider or recipe)
   type!: string;
+  // namespace to cache package as
+  namespace!: string;
+  // package name
   name!: string;
+  // describes this package
   description!: string;
+  // the semver of this package
   version!: string;
+  // the deno permissions to run package with
   permissions!: string[];
 }
 
@@ -139,7 +149,6 @@ class ProviderCmds extends Map<string, ProviderCmd> {
       return;
     }
     for (let [key, value] of this) {
-      // console.log('convert', key, value);
       this.set(
         key,
         ToInstance(

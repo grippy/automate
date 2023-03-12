@@ -1,6 +1,6 @@
 # automate-generated file: {{ registry_file }}
 type: "{{ package.type }}"
-name: "{{ package.name }}@{{ package.version }}"
+name: "{{ package.type }}.{{ package.namespace }}.{{ package.name }}@{{ package.version }}"
 description: |
   {{ package.description }}
 permissions: {{~ JSON.stringify(package.permissions ) }}

@@ -1,16 +1,27 @@
 import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
 
-import { build, provider, recipe, test, workspace } from './cmd/mod.ts';
+import { build, clean, provider, recipe, test, workspace } from './cmd/mod.ts';
 
 const main = new Command()
   .name('automate')
-  .env('AUTOMATE_LOG_LEVEL=<value:string>', 'set log-level', {
+  .env(
+    'AUTOMATE_ROOT=<value:string>',
+    'Set path to `.automate` directory (defaults to $HOME/.automate)',
+    {
+      global: true,
+      prefix: 'AUTOMATE_',
+    },
+  )
+  .env('AUTOMATE_LOG_LEVEL=<value:string>', 'Set log-level', {
     global: true,
     prefix: 'AUTOMATE_',
   })
   // build
   .command('build', build)
   .description('Build workspaces, providers, or recipes')
+  // clean
+  .command('clean', clean)
+  .description('Cleans AUTOMATE_ROOT directory. Defaults to $HOME/.automate')
   // provider sub-commands
   .command('provider', provider)
   .description('Provider management commands')

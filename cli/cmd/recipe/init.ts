@@ -1,13 +1,19 @@
 import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
 import { logging, template } from '../../../core/src/mod.ts';
+import * as constants from '../../constants.ts';
 
 const log = logging.Category('automate.recipe');
+
+const automatePackageNamespaceVerifier =
+  constants.automatePackageNamespaceVerifier;
+const automatePackageNameVerifier = constants.automatePackageNameVerifier;
 
 const automateConfigFileName = 'Automate.yaml';
 const automateConfig = `
 # Package details...
 package:
   type: recipe
+  namespace: {{ namespace }}
   name: {{ name }}
   version: "0.0.0"
   description: |
@@ -16,15 +22,16 @@ package:
   # Deno permissions
   # https://deno.land/manual@v1.30.3/basics/permissions
   permissions: [
-    # --allow-env=<allow-env>
-    # --allow-sys=<allow-sys>
-    # --allow-hrtime
-    # --allow-net=<allow-net>
-    # --allow-ffi=<allow-ffi>
-    # --allow-read=<allow-read>
-    # --allow-run=<allow-run>
-    # --allow-write=<allow-write>
-    # --allow-all
+    --allow-read
+    # --allow-env=<allow-env>,
+    # --allow-sys=<allow-sys>,
+    # --allow-hrtime,
+    # --allow-net=<allow-net>,
+    # --allow-ffi=<allow-ffi>,
+    # --allow-read=<allow-read>,
+    # --allow-run=<allow-run>,
+    # --allow-write=<allow-write>,
+    # --allow-all,
   ]
 
 # Package dependencies...
@@ -62,7 +69,7 @@ const gitIgnore = `
 
 const readmeFileName = 'README.md';
 const readme = `
-# Provider: {{ name }}
+# Provider: {{ namespace }}.{{ name }}
 `;
 
 /**
@@ -106,9 +113,16 @@ const action = (options: any, path: string) => {
   // use absolute path from here on out...
   path = Deno.realPathSync(path);
 
-  // Get the name of the project.
-  // or use the current dir as the default
-  // or pick this awesome default...
+  let namespace = options.namespace;
+  if (namespace === undefined) {
+    namespace = 'my.namespace';
+  }
+  if (!automatePackageNamespaceVerifier.test(namespace)) {
+    throw new Error(
+      'Package namespace should only contain alpha-numeric characters or periods. Namespace must not start or end with periods.',
+    );
+  }
+
   let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
@@ -118,7 +132,12 @@ const action = (options: any, path: string) => {
     }
   }
   if (name === undefined) {
-    name = 'super-awesome-recipe';
+    name = 'my-provider';
+  }
+  if (!automatePackageNameVerifier.test(name)) {
+    throw new Error(
+      'Package name should only contain alpha-numeric characters, periods, dashes, or underscores. Name must not start or end with periods, dashes, or underscores.',
+    );
   }
 
   const writeFiles = [
@@ -126,6 +145,7 @@ const action = (options: any, path: string) => {
       fileName: `${path}/${automateConfigFileName}`,
       file: automateConfig,
       data: {
+        namespace: namespace,
         name: name,
         step1arg1: '{{ $.utils.fn1(values.key1) }}',
       },
@@ -133,7 +153,7 @@ const action = (options: any, path: string) => {
     {
       fileName: `${path}/${readmeFileName}`,
       file: readme,
-      data: { name: name },
+      data: { namespace: namespace, name: name },
     },
     {
       fileName: `${path}/${gitIgnoreFileName}`,
@@ -164,6 +184,7 @@ const action = (options: any, path: string) => {
   log.info(
     'If this new package is a member of a workspace then please remember to add it to the workspace.members list.',
   );
+  // TODO: log how to build and run recipes
 };
 
 /**
@@ -172,10 +193,14 @@ const action = (options: any, path: string) => {
 export const init = new Command()
   .description('Init new recipe package.')
   .arguments('<path:string>')
+  .option(
+    '-ns, --namespace <namespace:string>',
+    'Set provider package namespace',
+  )
   .option('-n, --name <name:string>', 'Set recipe package name')
   .option(
     '-f, --force [force:boolean]',
     'Force create package if it already exists',
-    { default: false, standalone: true },
+    { default: false },
   )
   .action(action);

@@ -23,7 +23,6 @@ const action = async () => {
       continue;
     }
     rows.push([
-      registry.type,
       registry.name,
       registry.description,
       registry.permissions.join(' '),
@@ -44,7 +43,7 @@ const action = async () => {
 
   console.log('Current list of installed providers...');
   const table2 = new Table()
-    .header(['Type', 'Name', 'Description', 'Permissions'])
+    .header(['Name', 'Description', 'Permissions'])
     .body(rows)
     .maxColWidth(200)
     .padding(1)
