@@ -1,10 +1,10 @@
 # Automate
 
-Automate is a Deno "framework" and simple package manager for automating things with TypeScript.
+Automate is a [Deno](https://deno.land/) "framework" and simple package installer for automating things with TypeScript.
 
 To accomplish this, you create `providers` and `recipes`. A provider operates on input and optionally can return output. A provider may make API calls, read/write files, work with secrets, build/deploy code, call other CLI programs, you name it. Providers expose their functionality as class instances which are wrapped as CLI programs.
 
-Recipes construct templated steps for running provider commands.
+Recipes construct templated steps for running provider commands. (How this works is still TBD).
 
 Both providers and recipes are written as Automate "packages" to make code reuse easy.
 

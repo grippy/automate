@@ -45,5 +45,18 @@
 ### `automate` ENV variables
 - [ ] `AUTOMATE_TMP` (automate temp directory for where to store output files)
 
-# Inline todo's in the project
+## Inline todo's in the project
 - [ ] Make `automateCoreModPath` configurable for local development
+
+## Testing
+- [ ] More core tests are needed.
+
+## Github Action
+- [ ] Wire up the test suit
+
+## Packaging Automate CLI
+- [ ] Docs around installing this tool
+- [ ] Figure out how we package the automate cli.
+
+## Docker Runtime Container
+- [ ] This would make it easier to distribute
