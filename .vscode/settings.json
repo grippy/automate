@@ -1,0 +1,29 @@
+{
+    "deno.codeLens.implementations": false,
+    "deno.codeLens.references": false,
+    "deno.codeLens.referencesAllFunctions": false,
+    "deno.codeLens.test": false,
+    "deno.enable": true,
+    "deno.inlayHints.enumMemberValues.enabled": true,
+    "deno.inlayHints.functionLikeReturnTypes.enabled": false,
+    "deno.inlayHints.parameterNames.enabled": "all",
+    "deno.inlayHints.parameterNames.suppressWhenArgumentMatchesName": false,
+    "deno.inlayHints.parameterTypes.enabled": false,
+    "deno.inlayHints.propertyDeclarationTypes.enabled": false,
+    "deno.inlayHints.variableTypes.enabled": false,
+    "deno.inlayHints.variableTypes.suppressWhenTypeMatchesName": false,
+    "deno.suggest.completeFunctionCalls": true,
+    "deno.importMap": "./automate/core/import_map.json",
+
+    "[javascript]": {
+        "editor.defaultFormatter": "dprint.dprint",
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dprint.dprint",
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true
+    },
+
+}

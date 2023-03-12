@@ -1,0 +1,7 @@
+
+class1:
+  prop2:
+    field1: "is"
+
+target:
+  stack: production

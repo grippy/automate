@@ -1,0 +1,11 @@
+
+class1:
+  prop1: default
+  prop2:
+   field1: default
+  prop3:
+   field1:
+    - default
+
+target:
+  stack: default
