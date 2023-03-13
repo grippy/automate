@@ -1,12 +1,6 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import {
-  config,
-  logging,
-  record,
-  template,
-  yaml,
-} from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
+const { logging, record, template, yaml } = automate;
 
 // setup logger
 const log = logging.Category('automate.build');
@@ -39,9 +33,9 @@ let BUILT = new Set<string>();
 
 const loadAutomateConfig = async (
   path: string,
-): Promise<config.AutomateConfig> => {
+): Promise<automate.config.AutomateConfig> => {
   const plain = await yaml.load(path);
-  const cfg = record.ToInstance(config.AutomateConfig, plain);
+  const cfg = record.ToInstance(automate.config.AutomateConfig, plain);
   cfg.convertTypes();
   return Promise.resolve(cfg);
 };
@@ -71,7 +65,7 @@ const setupAutomateDirs = () => {
  */
 
 const buildWorkspace = async (
-  workspace: config.Workspace,
+  workspace: automate.config.Workspace,
 ): Promise<unknown> => {
   const members = workspace.members || [];
 
@@ -201,6 +195,8 @@ const buildPackage = async (packageFile: string) => {
     provider = yaml.stringify(prov);
   }
 
+  // This should be of type:
+  // automate.config.RegistryPackage
   const registryPkg = {
     package: pkg,
     provider: provider,
@@ -210,7 +206,7 @@ const buildPackage = async (packageFile: string) => {
     automate_core_mod: automateCoreModPath,
     package_mod: packageMod,
     cli_mod: packageCachePackageFileName,
-  } as config.RegistryPackage;
+  } as Record<string, unknown>;
 
   const packageCachePackageFile = template.render(
     packageCachePackageModFileTemplate,
@@ -240,7 +236,7 @@ const buildPackage = async (packageFile: string) => {
     yaml.stringify(values),
   );
 
-  console.log(cfg);
+  log.info(`Automate manifest ${JSON.stringify(cfg)}`);
 
   // mark this as done
   BUILT.add(packageFile);
@@ -267,7 +263,7 @@ const buildPackage = async (packageFile: string) => {
  */
 const buildDep = async (
   packageFile: string,
-  packageType: undefined | Map<string, string | config.Dependency>,
+  packageType: undefined | Map<string, string | automate.config.Dependency>,
 ) => {
   if (packageType === undefined || packageType === null) {
     return;
@@ -277,7 +273,7 @@ const buildDep = async (
     let path = null;
     if (typeof value === 'string') {
       path = value;
-    } else if (value instanceof config.Dependency) {
+    } else if (value instanceof automate.config.Dependency) {
       path = value.path;
     }
     if (path === undefined || path === null) {
@@ -317,10 +313,10 @@ const buildDep = async (
 };
 
 /**
- * Action handler for command
+ * Action handler `build` command
  * @param options
  */
-const action = async (options: any) => {
+const action = async (_options: any) => {
   // log.info(`Reading ${configFile}`);
   // Read the Automate.yaml yaml file...
   const cfg = await loadAutomateConfig(configFile)
@@ -346,6 +342,6 @@ const action = async (options: any) => {
 /**
  * Build call sub-command
  */
-export const build = new Command()
+export const build = new cliffy.Command()
   .description('Build the current workspace or package')
   .action(action);

@@ -1,8 +1,8 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, yaml } from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
-const automateRegistryDir = constants.automateRegistryDir;
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, yaml } = automate;
+const automateRegistryDir = constants.automateRegistryDir;
 const log = logging.Category('automate.provider.run');
 
 /**
@@ -100,7 +100,7 @@ const action = async (
 /**
  * Provider run sub-command
  */
-export const run = new Command()
+export const run = new cliffy.Command()
   .name('run')
   .description(
     'Run provider name@version cmd',

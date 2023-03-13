@@ -1,17 +1,16 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { config, logging, record, yaml } from '../../../core/src/mod.ts';
-
 import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, record, yaml } = automate;
 const log = logging.Category('automate.test');
 const configFileName = constants.configFileName;
 const configFile = constants.configFile;
 
 const loadAutomateConfig = async (
   path: string,
-): Promise<config.AutomateConfig> => {
+): Promise<automate.config.AutomateConfig> => {
   const plain = await yaml.load(path);
-  const cfg = record.ToInstance(config.AutomateConfig, plain);
+  const cfg = record.ToInstance(automate.config.AutomateConfig, plain);
   cfg.convertTypes();
   return Promise.resolve(cfg);
 };
@@ -24,9 +23,7 @@ const loadAutomateConfig = async (
  * @param options
  */
 
-const action = async (
-  options: any,
-) => {
+const action = async (_options: any) => {
   // load the Automate config in the current directory
   const cfg = await loadAutomateConfig(configFile)
     .catch(err => {
@@ -94,7 +91,7 @@ const action = async (
 /**
  * Test sub-command
  */
-export const test = new Command()
+export const test = new cliffy.Command()
   .name('test')
   .description(
     'Generate a `deno test [permissions] .` command using the permissions for the workspace or package.',

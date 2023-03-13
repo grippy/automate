@@ -1,8 +1,7 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { Table } from 'https://deno.land/x/cliffy@v0.25.7/table/mod.ts';
-import { logging, yaml } from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, yaml } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
 
 const log = logging.Category('automate.provider');
@@ -30,7 +29,7 @@ const action = async () => {
   }
   console.log('');
 
-  const table1 = new Table()
+  const table1 = new cliffy.Table()
     .header(['Registry'])
     .body([[automateRegistryDir]])
     .maxColWidth(200)
@@ -42,7 +41,7 @@ const action = async () => {
   console.log('');
 
   console.log('Current list of installed providers...');
-  const table2 = new Table()
+  const table2 = new cliffy.Table()
     .header(['Name', 'Description', 'Permissions'])
     .body(rows)
     .maxColWidth(200)
@@ -57,6 +56,6 @@ const action = async () => {
 /**
  * Provider list sub-command
  */
-export const list = new Command()
+export const list = new cliffy.Command()
   .description('List provider packages stored in the registry')
   .action(action);

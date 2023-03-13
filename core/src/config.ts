@@ -1,4 +1,4 @@
-import { ToInstance, Transform, Type } from './record.ts';
+import { ToInstance, Type } from './record.ts';
 
 /**
  * This file describes how to parse Automate.yaml files.
@@ -25,14 +25,15 @@ class Dependencies {
   @Type(() => Map<string, Dependency | Path>)
   template: Map<string, Dependency | Path> = new Map();
 
-  private converted: boolean = false;
+  private converted = false;
+
   convertDeps(): void {
     if (this.converted) {
       return;
     }
 
     if (this.provider !== undefined && this.provider !== null) {
-      for (let [key, value] of this.provider) {
+      for (const [key, value] of this.provider) {
         // console.log('convert', key, value);
         if (typeof value === 'object') {
           this.provider.set(
@@ -46,7 +47,7 @@ class Dependencies {
       }
     }
     if (this.recipe !== undefined && this.recipe !== null) {
-      for (let [key, value] of this.recipe) {
+      for (const [key, value] of this.recipe) {
         // console.log('convert', key, value);
         if (typeof value === 'object') {
           this.recipe.set(
@@ -60,7 +61,7 @@ class Dependencies {
       }
     }
     if (this.template !== undefined && this.template !== null) {
-      for (let [key, value] of this.template) {
+      for (const [key, value] of this.template) {
         // console.log('convert', key, value);
         if (typeof value === 'object') {
           this.template.set(
@@ -142,13 +143,13 @@ class ProviderDataTypes extends Map<string, ProviderDataType> {}
 class ProviderDataType extends Map<string, string> {}
 
 class ProviderCmds extends Map<string, ProviderCmd> {
-  private converted: boolean = false;
+  private converted = false;
 
   convertCmds(): void {
     if (this.converted) {
       return;
     }
-    for (let [key, value] of this) {
+    for (const [key, value] of this) {
       this.set(
         key,
         ToInstance(
@@ -162,10 +163,10 @@ class ProviderCmds extends Map<string, ProviderCmd> {
 }
 
 class ProviderCmd {
-  async: boolean = false;
-  description: string = '';
-  in: string = '';
-  out: string = 'void';
+  async = false;
+  description = '';
+  in = '';
+  out = 'void';
 }
 
 /**
@@ -177,7 +178,8 @@ class Recipe {
 
   // plainToInstance (or reflect-metadata) doesn't
   // properly handle to Map types with value Arrays
-  private converted: boolean = false;
+  private converted = false;
+
   convertSteps(): void {
     if (this.converted) {
       return;
@@ -231,7 +233,7 @@ class AutomateConfig {
 
   values?: Values;
 
-  private converted: boolean = false;
+  private converted = false;
 
   /**
    * convertTypes

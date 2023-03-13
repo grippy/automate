@@ -1,7 +1,7 @@
-import * as asserts from 'https://deno.land/std@0.174.0/testing/asserts.ts';
+import { asserts } from '../../deps_dev.ts';
 import * as config from '../config.ts';
 import * as logging from '../logging.ts';
-import { Expose, ToInstance, Type } from '../record.ts';
+import { ToInstance } from '../record.ts';
 import { load } from '../yaml.ts';
 
 // current directory for this file

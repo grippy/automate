@@ -1,7 +1,7 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, template } from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, template } = automate;
 const log = logging.Category('automate.recipe');
 
 const automatePackageNamespaceVerifier =
@@ -188,14 +188,14 @@ const action = (options: any, path: string) => {
 };
 
 /**
- * Provider init sub-command
+ * Recipe init sub-command
  */
-export const init = new Command()
+export const init = new cliffy.Command()
   .description('Init new recipe package.')
   .arguments('<path:string>')
   .option(
     '-ns, --namespace <namespace:string>',
-    'Set provider package namespace',
+    'Set recipe package namespace',
   )
   .option('-n, --name <name:string>', 'Set recipe package name')
   .option(

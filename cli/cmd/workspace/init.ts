@@ -1,9 +1,9 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, template } from '../../../core/src/mod.ts';
+import { automate, cliffy } from '../../deps.ts';
 
-// setup logger
-const log = logging.Category('automate.cli.workspace');
+const { logging, template } = automate;
+const log = logging.Category('automate.workspace');
 
+// scaffolding...
 const automateConfigFileName = 'Automate.yaml';
 const automateConfig = `
 workspace:
@@ -109,7 +109,7 @@ const action = (options: any, path: string) => {
       }
       Deno.readTextFileSync(file.fileName);
       log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: Deno.errors.NotFound) {
+    } catch (_err: Deno.errors.NotFound) {
       log.info(`Writing file ${file.fileName}`);
       const data = template.render(file.file, file.data);
       Deno.writeTextFileSync(file.fileName, data);
@@ -120,8 +120,10 @@ const action = (options: any, path: string) => {
 /**
  * Workspace init sub-command
  */
-export const init = new Command()
-  .description('Init new workspace project.')
+export const init = new cliffy.Command()
+  .description(
+    'Initialize new automate workspace at the specified path. Use `.` for the current directory.',
+  )
   .arguments('<path:string>')
   .option('-n, --name <name:string>', 'Set workspace name')
   .option(

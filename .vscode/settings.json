@@ -14,8 +14,6 @@
     "deno.inlayHints.variableTypes.enabled": false,
     "deno.inlayHints.variableTypes.suppressWhenTypeMatchesName": false,
     "deno.suggest.completeFunctionCalls": true,
-    "deno.importMap": "./core/import_map.json",
-
     "[javascript]": {
         "editor.defaultFormatter": "dprint.dprint",
         "editor.tabSize": 2,

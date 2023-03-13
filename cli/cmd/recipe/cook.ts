@@ -1,9 +1,11 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
+import { cliffy } from '../../deps.ts';
+
+// TODO: rename this command run
 
 /**
- * Recipe cooke sub-command
+ * Recipe cook sub-command
  */
-export const cook = new Command()
+export const cook = new cliffy.Command()
   .arguments('<source:string> [destination:string]')
   .description('Clone a repository into a newly created directory.')
   .action((options: any, source: string, destination?: string) => {

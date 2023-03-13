@@ -13,8 +13,7 @@ export const automateCacheDir = `${automateRootDir}/cache`;
 export const automateRegistryDir = `${automateRootDir}/registry`;
 
 // TODO: make this configurable
-export const automateCoreModPath =
-  '/Users/gmelton/work/automate/core/src/mod.ts';
+export const automateCoreModPath = '/Users/gmelton/work/automate/core/mod.ts';
 
 // Verify package namespace passes formatting check
 // Allowable: a-z A-Z 0-9 .

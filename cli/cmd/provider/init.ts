@@ -1,8 +1,7 @@
-import { pascalCase } from 'https://deno.land/x/case/mod.ts';
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, template } from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
+import { automate, casing, cliffy } from '../../deps.ts';
 
+const { logging, template } = automate;
 const log = logging.Category('automate.provider');
 
 const automateCoreModPath = constants.automateCoreModPath;
@@ -13,6 +12,7 @@ const automatePackageNameVerifier = constants.automatePackageNameVerifier;
 // current directory
 const dirname = new URL('.', import.meta.url).pathname;
 
+// scaffolding...
 // Automate.yaml example template
 const automateConfigFileName = 'Automate.yaml';
 const automateConfig = `
@@ -236,7 +236,7 @@ const action = (options: any, path: string) => {
       file: packageModuleFileTemplate,
       data: {
         automate_core_mod: automateCoreModPath,
-        className: `Provider${pascalCase(name)}`,
+        className: `Provider${casing.pascalCase(name)}`,
         namespace: namespace,
         name: name,
       },
@@ -246,7 +246,7 @@ const action = (options: any, path: string) => {
       fileName: `${path}/${packageModuleTestFileName}`,
       file: packageModuleTestFileTemplate,
       data: {
-        className: `Provider${pascalCase(name)}`,
+        className: `Provider${casing.pascalCase(name)}`,
         namespace: namespace,
         name: name,
       },
@@ -281,7 +281,7 @@ const action = (options: any, path: string) => {
 /**
  * Provider init sub-command
  */
-export const init = new Command()
+export const init = new cliffy.Command()
   .description('Init new provider package.')
   .arguments('<path:string>')
   .option(

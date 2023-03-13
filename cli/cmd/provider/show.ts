@@ -1,16 +1,13 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { Table } from 'https://deno.land/x/cliffy@v0.25.7/table/mod.ts';
-import { logging, yaml } from '../../../core/src/mod.ts';
 import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, yaml } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
-
 const log = logging.Category('automate.provider');
 
 const action = async (_options: any, name: string) => {
   // read all the files inside the registry directory
   // filter only providers
-
   const regFileName = `${automateRegistryDir}/${name}.yaml`;
 
   let registry;
@@ -46,7 +43,7 @@ const action = async (_options: any, name: string) => {
     throw err;
   }
 
-  const table1 = new Table()
+  const table1 = new cliffy.Table()
     .header(['Registry file'])
     .body([[yaml.stringify(registry)]])
     .maxColWidth(200)
@@ -55,7 +52,7 @@ const action = async (_options: any, name: string) => {
     .border(true);
   table1.render();
 
-  const table2 = new Table()
+  const table2 = new cliffy.Table()
     .header(['Dependencies'])
     .body([[yaml.stringify(pkg.dependencies || {})]])
     .maxColWidth(200)
@@ -64,7 +61,7 @@ const action = async (_options: any, name: string) => {
     .border(true);
   table2.render();
 
-  const table3 = new Table()
+  const table3 = new cliffy.Table()
     .header(['Provider types/commands'])
     .body([[yaml.stringify(pkg.provider || {})]])
     .maxColWidth(200)
@@ -73,7 +70,7 @@ const action = async (_options: any, name: string) => {
     .border(true);
   table3.render();
 
-  const table4 = new Table()
+  const table4 = new cliffy.Table()
     .header(['Default Values'])
     .body([[yaml.stringify(pkg.values || {})]])
     .maxColWidth(200)
@@ -86,7 +83,7 @@ const action = async (_options: any, name: string) => {
 /**
  * Provider show sub-command
  */
-export const show = new Command()
+export const show = new cliffy.Command()
   .arguments('<name:string>')
   .description(
     'Show provider package details for package name (i.e. type.namespace.name@version) stored in the registry',

@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "strictPropertyInitialization": false
-  },
-  "importMap": "./import_map.json",
-  "tasks": {
-    "test": "deno test --allow-read --allow-env ."
-  }
-}

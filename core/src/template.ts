@@ -1,4 +1,4 @@
-import * as Eta from 'https://deno.land/x/eta@v2.0.0/mod.ts';
+import { Eta } from '../deps.ts';
 
 // Set defaults for rendering strings....
 Eta.configure({
@@ -16,7 +16,7 @@ Eta.configure({
 
 export const render = function(
   template: string,
-  data: object | undefined,
+  data: Record<string, unknown> | undefined,
 ): string {
   return Eta.render(template, data || {});
 };

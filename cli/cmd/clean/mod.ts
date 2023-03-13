@@ -1,12 +1,7 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import {
-  Confirm,
-  prompt,
-} from 'https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts';
-
-import { config, logging, record, yaml } from '../../../core/src/mod.ts';
 import { automateRootDir } from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging } = automate;
 const log = logging.Category('automate.clean');
 
 /**
@@ -19,10 +14,10 @@ const action = async (
   options: any,
 ) => {
   if (!options.force) {
-    const result = await prompt([{
+    const result = await cliffy.prompt([{
       name: 'confirm',
       message: `Are you sure you want to clean ${automateRootDir}?`,
-      type: Confirm,
+      type: cliffy.Confirm,
     }]);
     // set force to result.confirm
     options.force = result.confirm;
@@ -43,7 +38,7 @@ const action = async (
 /**
  * Clean command
  */
-export const clean = new Command()
+export const clean = new cliffy.Command()
   .name('clean')
   .option(
     '-f, --force [force:boolean]',
