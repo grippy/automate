@@ -14,7 +14,6 @@ const testAutomateConfig = function(plain: any) {
   // console.log(cfg);
   const deps = cfg.dependencies;
   if (deps !== undefined) {
-    console.log('Log dependencies');
     asserts.assertInstanceOf(
       deps.provider.get('name1'),
       config.Dependency,
@@ -49,6 +48,7 @@ const testAutomateConfig = function(plain: any) {
       );
     }
   }
+
   const provider = cfg.provider;
   if (provider !== undefined) {
     // console.log('Log provider commands...');

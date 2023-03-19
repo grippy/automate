@@ -25,9 +25,19 @@
 - [x] Refactor build command into Package class
 - [x] `automate recipe run` ideate how building/running recipes should work
 - [x] Move automate config loading to `config.ts`
-- [ ] Move directory `core/src/test` => `core/test`
+- [x] Move directory `core/src/test` => `core/test`
+
+
+
+
+
 - [ ] Make sure all commands work
 - [ ] Make a `watch` command for running build
+
+
+
+
+
 
 # TODO
 

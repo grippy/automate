@@ -3,7 +3,6 @@ import { casing } from '../deps.ts';
 import * as config from './config.ts';
 import * as constants from './constants.ts';
 import * as logging from './logging.ts';
-import * as provider from './provider.ts';
 import * as record from './record.ts';
 
 // setup logger
@@ -13,11 +12,6 @@ const log = logging.Category('automate.core.package');
 const automateCacheDir = constants.automateCacheDir;
 const automateCoreModPath = constants.automateCoreModPath;
 const automateRegistryDir = constants.automateRegistryDir;
-// const automateRootDir = constants.automateRootDir;
-// const automatePackageNamespaceVerifier =
-//   constants.automatePackageNamespaceVerifier;
-// const automatePackageNameVerifier = constants.automatePackageNameVerifier;
-const configFile = constants.configFile;
 const configFileName = constants.configFileName;
 
 // {type}.{namespace}.{name}@{version} string
@@ -36,14 +30,6 @@ type DepInjectionName = string;
 
 // The dependency map converted to a map of packages
 type Dependencies = Map<string, Package>;
-
-// DepsLoaded contains a Set<PackageName>
-// that describe what we've already loaded
-// for a given package dependency tree
-// type DepsLoaded = Set<PackageName>;
-
-// prevent cyclic package loading...
-const LOADED = new Set<string>();
 
 /**
  * RegistryEntry defines all the paths for working with
@@ -250,10 +236,6 @@ class Package {
    * @returns Promise<void>
    */
   async loadDependencyFromPath(path: string): Promise<void> {
-    // if (LOADED.has(path)) {
-    //   log.debug(`Already loaded ${path}, skipping...`);
-    //   return;
-    // }
     log.debug(`Loading dep path config ${path}`);
     const depPkg = await Package.fromPath(path, true);
     this.dependencies.set(path, depPkg);
