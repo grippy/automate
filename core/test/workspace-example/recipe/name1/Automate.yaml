@@ -23,13 +23,20 @@ dependencies:
 # Default recipe input values...
 values:
   key1: value1
+  key2: value2
 
 # Recipe definition
 recipe:
   steps:
     step1:
       - dep: provider.name1
-        cmd: cmd1
+        cmd: greet
         in:
-          arg1: "{{ helpers.utils.fn1(values.key1) }}"
-        out: state.key1
+          arg1: "{{ values.key1 }}"
+        out: myGreeting
+      - dep: provider.name2
+        cmd: sayGreeting
+        in:
+          name: Grippy
+          greet: "{{ state.myGreeting }}"
+        out: sayGreetingSaid

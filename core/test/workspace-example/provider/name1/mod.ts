@@ -1,21 +1,21 @@
 import { logging, provider } from '../../../../mod.ts';
 
 // create logger
-const log = logging.Category('name1');
+const log = logging.Category('provider.test.workspace.example.name1@0.0.0');
 type Values = Record<string, unknown>;
 
 class ProviderName1 implements provider.Provider {
-  name: string;
+  greeting: string;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor(greeting: string) {
+    this.greeting = greeting;
   }
 
   // deno-lint-ignore require-await
-  async cmd1(values: Values): Promise<string> {
-    log.info('name', this.name);
-    log.debug('cmd1 called w/', values);
-    return Promise.resolve('OK');
+  async greet(values: Values): Promise<string> {
+    log.debug(`greeting: ${this.greeting}`);
+    log.debug(`greet called w/ ${JSON.stringify(values)}`);
+    return Promise.resolve(this.greeting);
   }
 }
 

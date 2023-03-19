@@ -17,7 +17,7 @@ import { initializeProvider } from '{{ registry.packageRecipeProviderMod }}';
 // package variables
 const packageType = '{{ cfg.package.type }}';
 const packageValuesFile = '{{ registry.cachePackageValuesFileName }}';
-const packageName = '{{ registry.packageName }}';
+const packageName = '{{ name }}';
 
 // cli logger
 const log = logging.Category(packageName);
@@ -46,21 +46,18 @@ const action = async (options: any, cmd: string) => {
   // call provider command
   const provider: prov.Provider = await initializeProvider();
   log.info(`Calling provider.${cmd}`);
-
-
-  // if (packageType === 'recipe') {
-  //   const result = await provider.cook(values);
-  //   // there is noting to do for a recipe
-  // } else if (packageType === 'provider') {
+  // @ts-ignore: ignore 'any' type error
   const fn = provider[cmd];
   // does this cmd exist?
   if (fn === undefined) {
     throw new Error(`Provider ${packageName} has no command named ${cmd}`);
   }
-  // is this method async?
+  // we lost `this` context above to verify the cmd exists
+  // bind fn with provider & values to add it back...
   const bound = fn.bind(provider, values);
   let result: any = null;
 
+  // is this method async?
   if (isAsync(fn)) {
     result = await bound();
     if (typeof result === 'object') {
@@ -74,19 +71,10 @@ const action = async (options: any, cmd: string) => {
     }
     log.info(`Output: ${result}`);
   }
-    // TODO: use --output-file to write to disk?
-
-  // } else {
-  //   console.log('hmmm, nothing happened. Unrecognized type.')
-  // }
+  // TODO: use --output-file to write to disk?
 
 };
 
-// TODO: add --input-format option
-// TODO: add --output-format option
-// TODO: add --output-file option for writing to cmd result to disk
-
-// TODO: figure out how to deal with output values
 const main = new Command()
   .name(packageName)
   .version('{{ cfg.package.version }}')

@@ -32,7 +32,7 @@ provider:
     MyType2:
       key1: string
   commands:
-    cmd1:
+    greet:
       description: |
         This command works magic...
       in: MyType1

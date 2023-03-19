@@ -1,9 +1,14 @@
 import { Provider } from './provider.ts';
-import { Plain } from './record.ts';
 
 // vanilla js object
 export type Values = Record<string, unknown>;
 export type State = Record<string, unknown>;
+export type Results = Record<string, unknown>;
+
+export type CookResponse = {
+  state: State;
+  results: Results;
+};
 
 // opts
 export type Opts = {
@@ -78,7 +83,7 @@ export class Recipe {
   steps: Steps;
   deps: Deps;
   state: State;
-  results: Plain;
+  results: Results;
 
   // recipe name
   constructor(name: string, deps: Deps) {
@@ -136,12 +141,15 @@ export class Recipe {
   // how they were added to the steps map...
   // Returns a map of results from each step where the step name
   // is the key.
-  async cook(): Promise<void> {
+  async cook(values: Values): Promise<CookResponse> {
     // console.log(`<Recipe name="${this.name}">`);
     for (const [name, step] of this.steps) {
       // console.log(`<Step name="${name}">`);
       try {
-        const result = await step({ state: this.state, values: {} }, this.deps);
+        const result = await step(
+          { state: this.state, values: values },
+          this.deps,
+        );
         this.results[name] = result;
       } catch (err) {
         return Promise.reject(err);
@@ -149,6 +157,9 @@ export class Recipe {
       // console.log(`</Step>`);
     }
     // console.log('</Recipe>');
-    return Promise.resolve();
+    return Promise.resolve({
+      state: this.state,
+      results: this.results,
+    });
   }
 }

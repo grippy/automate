@@ -2,7 +2,11 @@ import {
   logging,
   provider as __provider,
   recipe as __recipe,
+  template2 as __template,
 } from '{{ registry.automateCoreMod }}';
+
+import * as deno_lodash from 'https://deno.land/x/deno_lodash@v0.1.0/mod.ts';
+const lodash = deno_lodash.ld;
 
 // create initialize functions
 // dprint-ignore-start
@@ -22,16 +26,37 @@ const log = logging.Category('{{ registry.registryName }}');
 type Values = Record<string, unknown>;
 type State = __recipe.State;
 type Deps = __recipe.Deps;
-type Opts = {
-  values: Values;
-  state: State;
+type Opts = __recipe.Opts;
+type CookResponse = __recipe.CookResponse;
+
+// Merge values objects
+const mergeValues = function(vals: Values[]): Values {
+  let merged = {};
+  lodash.forEach(vals, function(v: Values) {
+    if (merged === null) {
+      merged = v;
+      return;
+    }
+    lodash.merge(merged, v);
+  });
+  return merged;
 };
+
+// Render templates... hacky for now
+// JSON.sringify(values) => render => JSON.parse
+// TODO: iterate values and only
+const render = function (opts: Opts, values: Values): Values {
+  const tmpl = JSON.stringify(values);
+  const json = __template.render(tmpl, opts);
+  return JSON.parse(json);
+}
+
 
 // generate: recipe step tasks here...
 // dprint-ignore-start
 {{#each cfg.recipe.steps}}
 {{#each this}}
-async function {{@../key}}_{{ @index }} ({state, values}: Opts, {provider, recipe}: Deps) {
+async function {{@../key}}_{{ @index }} ({state, values}: Opts, {provider, recipe}: Deps): Promise<unknown> {
 
   const name = '{{ this.name }}';
   const description = '{{ this.description }}';
@@ -39,12 +64,16 @@ async function {{@../key}}_{{ @index }} ({state, values}: Opts, {provider, recip
   const cmd = '{{ this.cmd }}';
   const input = {{{ json this.in }}};
   const outputKey = '{{ this.out }}';
+  const mergedValues = mergeValues([{}, values, input]);
+  const boundValues = render({ state, values }, mergedValues);
 
-  log.info(`Call ${dep}.${cmd} w/ values ${JSON.stringify(values)}`);
-  const result = await {{ dep }}.{{ cmd }}(values);
+  log.info(`Call ${dep}.${cmd} w/ merged & bound values ${JSON.stringify(boundValues)}`);
+  // @ts-ignore: ignore cmd doesn't exist on Provider
+  const result = await {{ dep }}.{{ cmd }}(boundValues);
   if (outputKey !== undefined) {
     state[outputKey] = result;
   }
+  return Promise.resolve(result);
 }
 {{/each}}
 {{/each}}
@@ -59,11 +88,11 @@ export class RecipeProvider implements __provider.Provider {
     this.recipe = recipe;
   }
 
-  async cook(values: Values): Promise<void> {
+  async cook(values: Values): Promise<CookResponse> {
     // we need to merge the default values with values?
     log.info(`RecipeProvider.cook ${JSON.stringify(values)}`);
-    await this.recipe.cook();
-    return Promise.resolve();
+    const result = await this.recipe.cook(values);
+    return Promise.resolve(result);
   }
 }
 
@@ -96,11 +125,11 @@ const initializeRecipe = async (): Promise<__recipe.Recipe> => {
 
   // define steps
   {{#each cfg.recipe.steps}}
+  const {{@key}} = [
   {{#each this}}
-  const {{@../key}} = [
     {{@../key}}_{{ @index }},
-  ];
   {{/each}}
+  ];
   {{/each}}
 
   const recipe = new __recipe.Recipe('{{ registry.registryName }}', deps)

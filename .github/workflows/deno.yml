@@ -53,5 +53,17 @@ jobs:
       - name: Build `test.workspace.example` packages
         run: deno task cli-build-test-workspace
 
-      - name: Install `automate` cli and run it it...
+      - name: Install `automate` cli and call `automate --help`
         run: deno task install-cli && automate --help
+
+      - name: Run `automate provider list`
+        run: automate provider list
+
+      - name: Run `automate provider show`
+        run: automate provider show provider.test.workspace.example.name1@0.0.0
+
+      - name: Run `automate provider run`
+        run: automate provider run provider.test.workspace.example.name1@0.0.0
+
+      - name: Run `automate recipe run`
+        run: automate recipe run recipe.test.workspace.example.name1@0.0.0

@@ -1,7 +1,7 @@
 import { logging, provider } from '../../../../mod.ts';
 
 // create logger
-const log = logging.Category('name3');
+const log = logging.Category('provider.test.workspace.example.name3@0.0.0');
 
 type Values = Record<string, unknown>;
 
@@ -10,7 +10,7 @@ class ProviderName3 implements provider.Provider {
 
   // deno-lint-ignore require-await
   async cmd1(values: Values): Promise<string> {
-    log.debug('cmd1 called w/', values);
+    log.debug(`cmd1 called w/ ${values}`);
     return Promise.resolve('OK');
   }
 }
