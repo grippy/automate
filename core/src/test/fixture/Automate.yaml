@@ -11,7 +11,7 @@ workspace:
 
 # ------
 
-# A package is we make things modular.
+# A package definition example.
 package:
   name: my-package
   description: |
@@ -21,26 +21,27 @@ package:
   permissions:
     - allow-all
 
-# A package defines dependencies (which are pointers
-# to other Automate packages we need to cache) it requires
-# for running commands.
+# A package defines dependencies it requires
+# for running commands. The path should point to the
+# base directory of the Automate package we want to use
+# TODO: describe how to work with dependencies in code.
 dependencies:
   provider:
     name1:
       path: "../name1"
     name2: "../name2"
   recipe:
-    build-app: "../recipe/build-app"
+    build-app: "http://github.com/myorg/pkg/recipe/build-app@1.0.0"
     install-app:
       path: "../recipe/install-app"
   template:
     helpers:
-      $: "../utils/mod.ts"
+      utils: "../utils/mod.ts"
 
 # A package defines default input values
-# used for calling package commands with..
+# used for calling package commands..
 # This is also where we can define "ENV" variables
-# required for Provider instantiation
+# required for provider/recipe instantiation
 values:
   env:
     ENV1: default
@@ -79,24 +80,28 @@ provider:
       in: MyType2
       out: void
 
-# `Recipe` package types define steps of tasks.
-# Tasks issue provider command calls.
+# `Recipe` package types define steps of execution.
+# Tasks can bind template and run provider commands.
 # (This is still TBD)
 recipe:
   steps:
     setup:
-      - cmd: provider/name1/get
+      - name: step1
+        description: |
+          Look up values for something
+        cmd: provider.name1/get
         in:
           arg1: "{{ values.key1 | $.utils.fn1 }}"
         out: state.key1
-      - cmd: provider/name1/list
+      - dep: provider.name1
+        cmd: list
         in:
           arg1: "{{ values.key2 }}"
         out: state.mylist
-      - cmd: provider/values/merge
-        in:
-          files: "{{ values.build-app.values }}"
-        out: "build-app.values"
+      - cmd: provider.values/merge
+        input:
+          files: "{{ values.build-app.files }}"
+        output: state.build-app
 
     build-app:
       - description: build app now

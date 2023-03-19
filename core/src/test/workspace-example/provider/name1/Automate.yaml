@@ -1,0 +1,39 @@
+# Package details...
+package:
+  type: provider
+  namespace: test.workspace.example
+  name: name1
+  version: "0.0.0"
+  description: |
+    My new provider description.
+
+  permissions: [--allow-read, --allow-env, --allow-run]
+
+# Package dependencies...
+dependencies:
+  provider:
+    name2:
+      path: "../../provider/name2"
+    name3:
+      path: "../../provider/name3"
+
+# Default values go here...
+values:
+
+# Provider types and command map
+# This is only used to aid others
+# with using this provider.
+provider:
+  types:
+    MyType1:
+      key1: string
+      key2: number
+      key3: MyType2
+    MyType2:
+      key1: string
+  commands:
+    cmd1:
+      description: |
+        This command works magic...
+      in: MyType1
+      out: MyType2

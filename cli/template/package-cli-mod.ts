@@ -1,13 +1,23 @@
-// Automate-generated file: {{ cli_mod }}
+// Automate-generated file: {{ registry.cachePackageModFileName }}
 import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, provider as prov, yaml } from '{{ automate_core_mod }} ';
-import { initializeProvider } from '{{ package_mod }}';
+import {
+  logging,
+  provider as prov,
+  yaml,
+} from '{{ registry.automateCoreMod }} ';
+
+// dprint-ignore-start
+{{#ifeq cfg.package.type 'provider' }}
+import { initializeProvider } from '{{ registry.packageProviderMod }}';
+{{else}}
+import { initializeProvider } from '{{ registry.packageRecipeProviderMod }}';
+{{/ifeq}}
+// dprint-ignore-end
 
 // package variables
-const packageFile = '{{ package_file }}';
-const packageValuesFile = '{{ package_values_file }}';
-const packageName =
-  '{{ package.type }}.{{ package.namespace }}.{{ package.name }}@{{ package.version }}';
+const packageType = '{{ cfg.package.type }}';
+const packageValuesFile = '{{ registry.cachePackageValuesFileName }}';
+const packageName = '{{ registry.packageName }}';
 
 // cli logger
 const log = logging.Category(packageName);
@@ -35,30 +45,41 @@ const action = async (options: any, cmd: string) => {
 
   // call provider command
   const provider: prov.Provider = await initializeProvider();
-  log.info(`Calling ${cmd}`);
+  log.info(`Calling provider.${cmd}`);
 
-  const callCmd = provider[cmd];
+
+  // if (packageType === 'recipe') {
+  //   const result = await provider.cook(values);
+  //   // there is noting to do for a recipe
+  // } else if (packageType === 'provider') {
+  const fn = provider[cmd];
   // does this cmd exist?
-  if (callCmd === undefined) {
+  if (fn === undefined) {
     throw new Error(`Provider ${packageName} has no command named ${cmd}`);
   }
-
   // is this method async?
+  const bound = fn.bind(provider, values);
   let result: any = null;
-  if (isAsync(callCmd)) {
-    result = await callCmd(values);
+
+  if (isAsync(fn)) {
+    result = await bound();
     if (typeof result === 'object') {
       result = JSON.stringify(result);
     }
     log.info(`Output: ${result}`);
   } else {
-    result = callCmd(values);
+    result = bound();
     if (typeof result === 'object') {
       result = JSON.stringify(result);
     }
     log.info(`Output: ${result}`);
   }
-  // TODO: use --output-file to write to disk?
+    // TODO: use --output-file to write to disk?
+
+  // } else {
+  //   console.log('hmmm, nothing happened. Unrecognized type.')
+  // }
+
 };
 
 // TODO: add --input-format option
@@ -68,8 +89,8 @@ const action = async (options: any, cmd: string) => {
 // TODO: figure out how to deal with output values
 const main = new Command()
   .name(packageName)
-  .version('{{ package.version }}')
-  .description('Run package')
+  .version('{{ cfg.package.version }}')
+  .description('Run package cli')
   .arguments('<cmd:string>')
   .option(
     '-f, --value <value:string>',

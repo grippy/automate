@@ -1,9 +1,15 @@
 // export template module
 export * as Eta from 'https://deno.land/x/eta@v2.0.0/mod.ts';
 
+import Handlebars from 'https://esm.sh/handlebars@4.7.6';
+export { Handlebars };
+
 // export logging
 import * as winston from 'npm:winston@3';
 export { winston };
+
+// casing
+export * as casing from 'https://deno.land/x/case/mod.ts';
 
 // export class-transformer
 export * as class_transformer from 'npm:class-transformer@0.5.1';

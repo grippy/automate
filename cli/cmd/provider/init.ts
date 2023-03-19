@@ -1,7 +1,6 @@
-import * as constants from '../../constants.ts';
 import { automate, casing, cliffy } from '../../deps.ts';
 
-const { logging, template } = automate;
+const { logging, constants, template } = automate;
 const log = logging.Category('automate.provider');
 
 const automateCoreModPath = constants.automateCoreModPath;
@@ -66,7 +65,7 @@ values:
 provider:
   types:
     MyType1:
-      key1: string,
+      key1: string
       key2: number
       key3: MyType2
     MyType2:
@@ -79,32 +78,32 @@ provider:
       out: MyType2
 `;
 
-/* git ignore file */
-const gitIgnoreFileName = '.gitignore';
-const gitIgnore = `
-.automate/
-`;
+// /* git ignore file */
+// const gitIgnoreFileName = '.gitignore';
+// const gitIgnore = `
+// .automate/
+// `;
 
-/* deno config */
-// TODO: add some default tasks here
-const denoJsonFileName = 'deno.jsonc';
-const denoJson = `
-{
-  "compilerOptions": {},
-  "tasks": {
-    "dev": "deno run --watch main.ts"
-  }
-}
-`;
+// /* deno config */
+// // TODO: add some default tasks here
+// const denoJsonFileName = 'deno.jsonc';
+// const denoJson = `
+// {
+//   "compilerOptions": {},
+//   "tasks": {
+//     "dev": "deno run --watch main.ts"
+//   }
+// }
+// `;
 
-/* import map */
-// TODO: do we need this?
-const importMapFileName = 'import_map.json';
-const importMap = `
-{
-  "imports": {}
-}
-`;
+// /* import map */
+// // TODO: do we need this?
+// const importMapFileName = 'import_map.json';
+// const importMap = `
+// {
+//   "imports": {}
+// }
+// `;
 
 /* README */
 const readmeFileName = 'README.md';
@@ -212,24 +211,24 @@ const action = (options: any, path: string) => {
         name: name,
       },
     },
-    {
-      comment: 'Generate .gitignore',
-      fileName: `${path}/${gitIgnoreFileName}`,
-      file: gitIgnore,
-      data: {},
-    },
-    {
-      comment: 'Generate deno.jsonc',
-      fileName: `${path}/${denoJsonFileName}`,
-      file: denoJson,
-      data: {},
-    },
-    {
-      comment: 'Generate import_map.json',
-      fileName: `${path}/${importMapFileName}`,
-      file: importMap,
-      data: {},
-    },
+    // {
+    //   comment: 'Generate .gitignore',
+    //   fileName: `${path}/${gitIgnoreFileName}`,
+    //   file: gitIgnore,
+    //   data: {},
+    // },
+    // {
+    //   comment: 'Generate deno.jsonc',
+    //   fileName: `${path}/${denoJsonFileName}`,
+    //   file: denoJson,
+    //   data: {},
+    // },
+    // {
+    //   comment: 'Generate import_map.json',
+    //   fileName: `${path}/${importMapFileName}`,
+    //   file: importMap,
+    //   data: {},
+    // },
     {
       comment: 'Generate mod.ts',
       fileName: `${path}/${packageModuleFileName}`,
@@ -285,7 +284,7 @@ export const init = new cliffy.Command()
   .description('Init new provider package.')
   .arguments('<path:string>')
   .option(
-    '-ns, --namespace <namespace:string>',
+    '--namespace <namespace:string>',
     'Set provider package namespace',
   )
   .option('-n, --name <name:string>', 'Set provider package name')

@@ -1,30 +1,36 @@
-import * as constants from '../../constants.ts';
 import { automate, cliffy } from '../../deps.ts';
 
-const { logging, yaml } = automate;
+const { logging, constants, yaml } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
 
-const log = logging.Category('automate.provider');
+const log = logging.Category('automate.provider.list');
 
 const action = async () => {
   // read all the files inside the registry directory
   // filter only providers
 
-  let rows = [];
+  const rows = [];
   for (const entry of Deno.readDirSync(automateRegistryDir)) {
     if (!entry.isFile) {
       continue;
     }
 
+    // read the registry file
     const regFileName = `${automateRegistryDir}/${entry.name}`;
-    const registry = await yaml.load(regFileName);
-    if (registry.type !== 'provider') {
+
+    // load the registry package file from json
+    const pkg = (await import(regFileName, {
+      assert: { type: 'json' },
+    })).default;
+
+    // only display providers
+    if (pkg.cfg.package.type !== 'provider') {
       continue;
     }
     rows.push([
-      registry.name,
-      registry.description,
-      registry.permissions.join(' '),
+      pkg.name,
+      pkg.cfg.package.description,
+      pkg.cfg.package.permissions.join(' '),
     ]);
   }
   console.log('');
@@ -39,7 +45,6 @@ const action = async () => {
   table1.render();
 
   console.log('');
-
   console.log('Current list of installed providers...');
   const table2 = new cliffy.Table()
     .header(['Name', 'Description', 'Permissions'])

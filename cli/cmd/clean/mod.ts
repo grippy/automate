@@ -1,7 +1,7 @@
-import { automateRootDir } from '../../constants.ts';
 import { automate, cliffy } from '../../deps.ts';
 
-const { logging } = automate;
+const { logging, constants } = automate;
+const { automateRootDir } = constants;
 const log = logging.Category('automate.clean');
 
 /**
@@ -26,8 +26,7 @@ const action = async (
   if (options.force) {
     try {
       Deno.removeSync(automateRootDir, { recursive: true });
-    } catch (e: Deno.errors.NotFound) {
-    }
+    } catch (_err: Deno.errors.NotFound) {}
     Deno.mkdirSync(automateRootDir);
     log.info('done');
   } else {

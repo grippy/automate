@@ -1,4 +1,6 @@
 # Done
+
+## alpha
 - [x] Simplify Provider
 - [x] Build packages in cache and registry for local packages
 - [x] Add test file to provider package init command
@@ -8,23 +10,38 @@
 - [x] Package names and namespaces need character validation (a-zA-Z0-9-.)
 - [x] Automate.yaml should define default `values.env` section for provider/recipes
 - [x] Automate.yaml should define provider commands with input/output types
+- [x] use deps.ts and deps_dev.ts for re-exporting external modules
+- [x] add `automate provider show` cli command and display package registry details
+- [x] `automate test` Generate `deno test --allow-env ... path` for workspace/packages (pass deno test options through)
+- [x] `automate clean` clean the AUTOMATE_ROOT directory
+#
+- [x] `automate provider run` add values parsing with flags
+- [x] `automate provider run` generate `deno run` command along with permissions and env vars for calling provider cli wrapper
+- [x] `automate provider init` Using `-ns` with `-n`: error: Option "-n" can only occur once, but was found several times.
 
-# `automate provider show`
-- [x] add cli command and display package registry details
-
-# `automate test`
-- [x] Generate `deno test --allow-env ... path` for workspace/packages (pass deno test options through)
-
-# `automate clean`
-- [x] clan the AUTOMATE_ROOT directory
-
-# `automate provider run`
-- [x] Add values parsing with flags
-- [x] Generate `deno run` command along with permissions and env vars for calling provider cli wrapper
+## alpha-2
+- [x] should detect if initializeProvider is async or sync
+- [x] mv cli/constants.ts to core
+- [x] Refactor build command into Package class
+- [x] `automate recipe run` ideate how building/running recipes should work
+- [x] Move automate config loading to `config.ts`
 
 # TODO
 
+## Recipes
+- [ ] Add Step `sh` for inputs
+- [ ] Figure out passing values works for recipe steps
+
+## Template
+- [ ] Replace Eta w/ Handlebars
+
+## Core `version.ts`
+- [ ] Create a placeholder for now. This file should have the automate version in it (along with the minimum Deno version allowed)
+
+## Provider wrapper
+
 ## Automate.yaml
+- [ ] `Automate.yaml` adds `recipe.steps.step.name`, `recipe.steps.step.description`, and `recipe.steps.step.dep`
 
 ## Package Stuff
 - [ ] Publish release version 0.0.0 as git tag
@@ -37,10 +54,6 @@
 - [ ] Use files to store provider output
 
 ### Refactor
-- [ ] Move copy/paste automate config loading somewhere else
-
-### Recipes
-- [ ] Ideate how building/running recipes should work
 
 ### `automate` ENV variables
 - [ ] `AUTOMATE_TMP` (automate temp directory for where to store output files)

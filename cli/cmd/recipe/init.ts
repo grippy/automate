@@ -1,7 +1,6 @@
-import * as constants from '../../constants.ts';
 import { automate, cliffy } from '../../deps.ts';
 
-const { logging, template } = automate;
+const { constants, logging, template } = automate;
 const log = logging.Category('automate.recipe');
 
 const automatePackageNamespaceVerifier =
@@ -22,7 +21,9 @@ package:
   # Deno permissions
   # https://deno.land/manual@v1.30.3/basics/permissions
   permissions: [
-    --allow-read
+    --allow-env,
+    --allow-read,
+    --allow-run,
     # --allow-env=<allow-env>,
     # --allow-sys=<allow-sys>,
     # --allow-hrtime,
@@ -52,20 +53,24 @@ dependencies:
 values:
   key1: value1
 
-# Recipe definition
+# Recipe definition...
+# steps defaults to an empty object.
+# uncomment once ready to add something
 recipe:
-  steps:
-    # step1:
-    #  - cmd: provider/name1/get
-    #    in:
-    #      arg1: "{{ step1arg1 }}"
-    #    out: state.key1
+  steps: {}
+  # steps:
+  #   step1:
+  #     - dep: provider.name1
+  #       cmd: get
+  #       in:
+  #         arg1: "{{ step1.arg1 }}"
+  #       out: state.key1
 `;
 
-const gitIgnoreFileName = '.gitignore';
-const gitIgnore = `
-.automate/
-`;
+// const gitIgnoreFileName = '.gitignore';
+// const gitIgnore = `
+// .automate/
+// `;
 
 const readmeFileName = 'README.md';
 const readme = `
@@ -155,11 +160,11 @@ const action = (options: any, path: string) => {
       file: readme,
       data: { namespace: namespace, name: name },
     },
-    {
-      fileName: `${path}/${gitIgnoreFileName}`,
-      file: gitIgnore,
-      data: {},
-    },
+    // {
+    //   fileName: `${path}/${gitIgnoreFileName}`,
+    //   file: gitIgnore,
+    //   data: {},
+    // },
   ];
 
   if (options.force) {
@@ -194,7 +199,7 @@ export const init = new cliffy.Command()
   .description('Init new recipe package.')
   .arguments('<path:string>')
   .option(
-    '-ns, --namespace <namespace:string>',
+    '--namespace <namespace:string>',
     'Set recipe package namespace',
   )
   .option('-n, --name <name:string>', 'Set recipe package name')

@@ -2,7 +2,7 @@ import { automate, cliffy } from '../../deps.ts';
 
 const { logging, constants, yaml } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
-const log = logging.Category('automate.provider.run');
+const log = logging.Category('automate.recipe.run');
 
 /**
  * Action handler for command
@@ -15,10 +15,9 @@ const log = logging.Category('automate.provider.run');
 const action = async (
   options: any,
   name: string,
-  cmd: string,
 ) => {
   log.debug(
-    `provider run ${name} ${cmd} w/ options ${JSON.stringify(options)}`,
+    `provider run ${name} w/ options ${JSON.stringify(options)}`,
   );
   const regFileName = `${automateRegistryDir}/${name}.json`;
   let pkg;
@@ -28,16 +27,16 @@ const action = async (
     log.error(`No registry package exists at ${regFileName}`);
     throw err;
   }
-  if (pkg.cfg.package.type !== 'provider') {
-    log.warn(`Package with ${name} isn't a provider.`);
+  if (pkg.cfg.package.type !== 'recipe') {
+    log.warn(`Package ${name} isn't a recipe.`);
     return;
   }
 
   // skip first four args of Deno.args
   // and pass everything else to the run cmd as the options
   const opts: string[] = [];
-  if (Deno.args.length >= 4) {
-    for (let i = 4; i < Deno.args.length; i++) {
+  if (Deno.args.length >= 3) {
+    for (let i = 3; i < Deno.args.length; i++) {
       opts.push(Deno.args[i]);
     }
   }
@@ -72,7 +71,7 @@ const action = async (
     'run',
     ...permissions,
     pkg.registry.cachePackageModFileName,
-    cmd,
+    'cook',
     ...opts,
   ];
 
@@ -104,9 +103,9 @@ const action = async (
 export const run = new cliffy.Command()
   .name('run')
   .description(
-    'Run provider [name@version] [cmd]',
+    'Run recipe name@version',
   )
-  .arguments('<name:string> <cmd:string>')
+  .arguments('<name:string>')
   .option(
     '-f, --value=<value:string>',
     'Specify values in a YAML file (can specify multiple) (default [])',

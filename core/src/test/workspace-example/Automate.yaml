@@ -1,0 +1,9 @@
+workspace:
+  name: workspace-example
+  members:
+    [
+      "./provider/name1",
+      "./provider/name2",
+      "./provider/name3",
+      "./recipe/name1",
+    ]

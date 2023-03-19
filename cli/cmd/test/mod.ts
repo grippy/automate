@@ -1,7 +1,6 @@
-import * as constants from '../../constants.ts';
 import { automate, cliffy } from '../../deps.ts';
 
-const { logging, record, yaml } = automate;
+const { constants, logging, record, yaml } = automate;
 const log = logging.Category('automate.test');
 const configFileName = constants.configFileName;
 const configFile = constants.configFile;
