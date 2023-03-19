@@ -9,7 +9,7 @@
 name: Deno
 
 env:
-  AUTOMATE_CORE: ${GITHUB_WORKSPACE}/core
+  AUTOMATE_CORE: $GITHUB_WORKSPACE/core
 
 on:
   push:
@@ -40,6 +40,9 @@ jobs:
 
       # - name: Run linter
       #  run: deno lint
+
+      - name: Print env
+        run: printenv | sort
 
       - name: Run `automate.core` tests
         run: echo $PWD && echo $AUTOMATE_CORE
