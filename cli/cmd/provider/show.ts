@@ -2,7 +2,7 @@ import { automate, cliffy } from '../../deps.ts';
 
 const { logging, constants, yaml } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
-const log = logging.Category('automate.provider');
+const log = logging.Category('automate.provider.show');
 
 const action = async (_options: any, name: string) => {
   // read all the files inside the registry directory

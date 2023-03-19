@@ -31,5 +31,5 @@ recipe:
       - dep: provider.name1
         cmd: cmd1
         in:
-          arg1: "{{ $.utils.fn1(values.key1) }}"
+          arg1: "{{ helpers.utils.fn1(values.key1) }}"
         out: state.key1

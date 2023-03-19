@@ -85,8 +85,9 @@ const action = async (
   // what is sent to stdout. So it becomes impossible
   // to work with the cmd response unless we do something
   // whacky with how its formatted. Instead, if instructed,
-  // we should tell have the program we call capture its
-  // output and save it to disk.
+  // we should have the program we call capture its
+  // output and save it to disk. This should be useful for
+  // working with `Provider` commands.
 
   // run the command....
   const p = Deno.run({

@@ -1,7 +1,7 @@
 import { automate, cliffy } from '../../deps.ts';
 
 const { constants, logging, template } = automate;
-const log = logging.Category('automate.recipe');
+const log = logging.Category('automate.recipe.init');
 
 const automatePackageNamespaceVerifier =
   constants.automatePackageNamespaceVerifier;
@@ -54,23 +54,21 @@ values:
   key1: value1
 
 # Recipe definition...
-# steps defaults to an empty object.
-# uncomment once ready to add something
+# 'steps:' defaults to an empty object.
+# (uncomment once ready to add something)
 recipe:
   steps: {}
   # steps:
   #   step1:
-  #     - dep: provider.name1
+  #     - name: some-name
+  #       description: |
+  #         This step does the following...
+  #       dep: provider.name1
   #       cmd: get
   #       in:
   #         arg1: "{{ step1.arg1 }}"
   #       out: state.key1
 `;
-
-// const gitIgnoreFileName = '.gitignore';
-// const gitIgnore = `
-// .automate/
-// `;
 
 const readmeFileName = 'README.md';
 const readme = `
@@ -106,9 +104,11 @@ const action = (options: any, path: string) => {
   try {
     Deno.readDirSync(path);
     log.debug(`Path ${path} exists... skip making directory.`);
-  } catch (e: Deno.errors.NotFound) {
-    log.debug(`Create path ${path}...`);
-    Deno.mkdirSync(path, { recursive: true });
+  } catch (e: unknown) {
+    if (e instanceof Deno.errors.NotFound) {
+      log.debug(`Create path ${path}...`);
+      Deno.mkdirSync(path, { recursive: true });
+    }
   }
 
   // strip slash off the end so we can create file paths...
@@ -179,10 +179,12 @@ const action = (options: any, path: string) => {
       }
       Deno.readTextFileSync(file.fileName);
       log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: Deno.errors.NotFound) {
-      log.info(`Writing file ${file.fileName}`);
-      const data = template.render(file.file, file.data);
-      Deno.writeTextFileSync(file.fileName, data);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
     }
   }
 

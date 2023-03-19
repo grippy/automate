@@ -26,23 +26,17 @@
 - [x] `automate recipe run` ideate how building/running recipes should work
 - [x] Move automate config loading to `config.ts`
 - [x] Move directory `core/src/test` => `core/test`
-
-
-
-
-
+- [x] Move all file loading out of the cli commands module and into the method that uses the code
+- [x] properly handle `Deno.errors.NotFound` errors
 - [ ] Make sure all commands work
 - [ ] Make a `watch` command for running build
-
-
-
-
-
 
 # TODO
 
 ## Recipes
 - [ ] Add Step field name `sh` for running shell commands
+- [ ] Add Step field name `ts` for generating typescript code
+- [ ] Reading ENV variables should merge package + top-level dependency ENV vars
 - [ ] Figure out how passing values into recipe steps works
 - [ ] Figure out how registering template helpers works
 

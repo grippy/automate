@@ -26,7 +26,10 @@ const action = async (
   if (options.force) {
     try {
       Deno.removeSync(automateRootDir, { recursive: true });
-    } catch (_err: Deno.errors.NotFound) {}
+    } catch (e: unknown) {
+      // deno-lint-ignore no-empty
+      if (e instanceof Deno.errors.NotFound) {}
+    }
     Deno.mkdirSync(automateRootDir);
     log.info('done');
   } else {

@@ -1,7 +1,7 @@
 import { automate, casing, cliffy } from '../../deps.ts';
 
 const { logging, constants, template } = automate;
-const log = logging.Category('automate.provider');
+const log = logging.Category('automate.provider.init');
 
 const automateCoreModPath = constants.automateCoreModPath;
 const automatePackageNamespaceVerifier =
@@ -78,33 +78,6 @@ provider:
       out: MyType2
 `;
 
-// /* git ignore file */
-// const gitIgnoreFileName = '.gitignore';
-// const gitIgnore = `
-// .automate/
-// `;
-
-// /* deno config */
-// // TODO: add some default tasks here
-// const denoJsonFileName = 'deno.jsonc';
-// const denoJson = `
-// {
-//   "compilerOptions": {},
-//   "tasks": {
-//     "dev": "deno run --watch main.ts"
-//   }
-// }
-// `;
-
-// /* import map */
-// // TODO: do we need this?
-// const importMapFileName = 'import_map.json';
-// const importMap = `
-// {
-//   "imports": {}
-// }
-// `;
-
 /* README */
 const readmeFileName = 'README.md';
 const readme = `
@@ -150,9 +123,11 @@ const action = (options: any, path: string) => {
   try {
     Deno.readDirSync(path);
     log.debug(`Path ${path} exists... skip making directory.`);
-  } catch (e: Deno.errors.NotFound) {
-    log.debug(`Create path ${path}...`);
-    Deno.mkdirSync(path, { recursive: true });
+  } catch (e: unknown) {
+    if (e instanceof Deno.errors.NotFound) {
+      log.debug(`Create path ${path}...`);
+      Deno.mkdirSync(path, { recursive: true });
+    }
   }
 
   // strip slash off the end so we can create file paths...
@@ -211,24 +186,6 @@ const action = (options: any, path: string) => {
         name: name,
       },
     },
-    // {
-    //   comment: 'Generate .gitignore',
-    //   fileName: `${path}/${gitIgnoreFileName}`,
-    //   file: gitIgnore,
-    //   data: {},
-    // },
-    // {
-    //   comment: 'Generate deno.jsonc',
-    //   fileName: `${path}/${denoJsonFileName}`,
-    //   file: denoJson,
-    //   data: {},
-    // },
-    // {
-    //   comment: 'Generate import_map.json',
-    //   fileName: `${path}/${importMapFileName}`,
-    //   file: importMap,
-    //   data: {},
-    // },
     {
       comment: 'Generate mod.ts',
       fileName: `${path}/${packageModuleFileName}`,
@@ -264,10 +221,12 @@ const action = (options: any, path: string) => {
       }
       Deno.readTextFileSync(file.fileName);
       log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: Deno.errors.NotFound) {
-      log.info(`Writing file ${file.fileName}`);
-      const data = template.render(file.file, file.data);
-      Deno.writeTextFileSync(file.fileName, data);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
     }
   }
 

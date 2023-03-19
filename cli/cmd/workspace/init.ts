@@ -1,7 +1,7 @@
 import { automate, cliffy } from '../../deps.ts';
 
 const { logging, template } = automate;
-const log = logging.Category('automate.workspace');
+const log = logging.Category('automate.workspace.init');
 
 // scaffolding...
 const automateConfigFileName = 'Automate.yaml';
@@ -56,9 +56,11 @@ const action = (options: any, path: string) => {
   try {
     Deno.readDirSync(path);
     log.debug(`Path ${path} exists... skip making directory`);
-  } catch (e: Deno.errors.NotFound) {
-    log.debug(`Create path ${path}...`);
-    Deno.mkdirSync(path, { recursive: true });
+  } catch (e: unknown) {
+    if (e instanceof Deno.errors.NotFound) {
+      log.debug(`Create path ${path}...`);
+      Deno.mkdirSync(path, { recursive: true });
+    }
   }
 
   // strip slash off the end so we can create file paths...
@@ -109,10 +111,12 @@ const action = (options: any, path: string) => {
       }
       Deno.readTextFileSync(file.fileName);
       log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (_err: Deno.errors.NotFound) {
-      log.info(`Writing file ${file.fileName}`);
-      const data = template.render(file.file, file.data);
-      Deno.writeTextFileSync(file.fileName, data);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
     }
   }
 };

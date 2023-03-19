@@ -16,7 +16,7 @@ const BUILT = new Set<string>();
 // setup logger
 const log = logging.Category('automate.build');
 
-// // constants used to build packages
+// constants used to build packages
 const automateCacheDir = constants.automateCacheDir;
 const automateRegistryDir = constants.automateRegistryDir;
 const automateRootDir = constants.automateRootDir;
@@ -25,20 +25,6 @@ const configFileName = constants.configFileName;
 
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
-
-// cache template used for caching packages and registry
-const packageRegistryFileTemplate: string = Deno.readTextFileSync(
-  `${dirname}/../../template/registry-package.json`,
-);
-
-const packageCachePackageModFileTemplate: string = Deno.readTextFileSync(
-  `${dirname}/../../template/package-cli-mod.ts`,
-);
-
-const packageCachePackageRecipeProviderModFileTemplate: string = Deno
-  .readTextFileSync(
-    `${dirname}/../../template/recipe-provider-mod.ts`,
-  );
 
 const mkDirs = (dirs: string[]) => {
   dirs.forEach(path => {
@@ -120,16 +106,25 @@ const buildPackage = async (pack: pkg.Package) => {
   // convert package to object
   const registryPkg = pack.toObject();
 
-  const packageCachePackageModFile = template2.render(
-    packageCachePackageModFileTemplate,
-    registryPkg,
+  // cache template used for caching packages and registry
+  // registry/{type}.{namespace}.{name}@{version}.json
+  const packageRegistryFileTemplate: string = Deno.readTextFileSync(
+    `${dirname}/../../template/registry-package.json`,
   );
-
   const packageRegistryFile = template2.render(
     packageRegistryFileTemplate,
     {
       registryPkg: registryPkg,
     },
+  );
+
+  // cli mod.ts
+  const packageCachePackageModFileTemplate: string = Deno.readTextFileSync(
+    `${dirname}/../../template/package-cli-mod.ts`,
+  );
+  const packageCachePackageModFile = template2.render(
+    packageCachePackageModFileTemplate,
+    registryPkg,
   );
 
   // Create `provider` package files
@@ -171,6 +166,11 @@ const buildPackage = async (pack: pkg.Package) => {
     // file we need to auto-generate
     mkDirs([pack.registry.packageRecipeProviderPath]);
 
+    // recipe as a provider/mod.ts
+    const packageCachePackageRecipeProviderModFileTemplate: string = Deno
+      .readTextFileSync(
+        `${dirname}/../../template/recipe-provider-mod.ts`,
+      );
     // render RecipeProvider module
     const packageRecipeProviderModFile = template2.render(
       packageCachePackageRecipeProviderModFileTemplate,
