@@ -9,7 +9,7 @@
 name: Deno
 
 env:
-  AUTOMATE_CORE: $GITHUB_WORKSPACE/core
+  AUTOMATE_CORE: ${{env.GITHUB_WORKSPACE}}/core
 
 on:
   push:
