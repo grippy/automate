@@ -8,6 +8,9 @@
 
 name: Deno
 
+env:
+  AUTOMATE_CORE: "${{ env.GITHUB_WORKSPACE }}"
+
 on:
   push:
     branches: ["master"]
@@ -39,7 +42,7 @@ jobs:
       #  run: deno lint
 
       - name: Run `automate.core` tests
-        run: echo $PWD
+        run: echo $PWD && echo $AUTOMATE_CORE
 
       # - name: Run `automate.core` tests
       #   run: deno task test-core
