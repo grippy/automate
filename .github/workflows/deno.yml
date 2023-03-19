@@ -45,10 +45,13 @@ jobs:
         run: printenv | sort
 
       - name: Run `automate.core` tests
-        run: echo $PWD && echo ${AUTOMATE_CORE}
-
-      - name: Run `automate.core` tests
         run: deno task test-core
 
       - name: Run `test.workspace.example` tests
         run: deno task cli-test-test-workspace
+
+      - name: Build `test.workspace.example` packages
+        run: deno task cli-build-test-workspace
+
+      - name: Install `automate` cli and run it it...
+        run: deno task install-cli && automate --help

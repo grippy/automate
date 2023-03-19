@@ -26,6 +26,10 @@ const configFileName = constants.configFileName;
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
 
+/**
+ * Make directories
+ * @param dirs
+ */
 const mkDirs = (dirs: string[]) => {
   dirs.forEach(path => {
     try {
@@ -40,6 +44,9 @@ const mkDirs = (dirs: string[]) => {
   });
 };
 
+/**
+ * Setup Automate directories
+ */
 const setupAutomateDirs = () => {
   // setup automate directory structures
   const dirs = [
@@ -57,15 +64,22 @@ const setupAutomateDirs = () => {
  */
 
 const buildWorkspace = async (
+  path: string,
   workspace: automate.config.Workspace,
 ): Promise<unknown> => {
   // convert members to absolute paths
   const members = workspace.members;
-  const memberPaths = members.map(Deno.realPathSync);
+  const memberPaths = members.map(function(memberPath: string) {
+    if (memberPath.startsWith('./')) {
+      memberPath = memberPath.replace('./', '');
+    }
+    const resolvedPath = `${path}/${memberPath}`;
+    return Deno.realPathSync(resolvedPath);
+  });
 
   // now check if each path is an Automate package
-  for (const path of memberPaths) {
-    const packageFile = `${path}/${configFileName}`;
+  for (const memberPath of memberPaths) {
+    const packageFile = `${memberPath}/${configFileName}`;
     const pack = await pkg.Package.fromPath(packageFile);
     const result = await buildPackage(pack);
     log.debug(`Call buildPackage result: ${result}`);
@@ -90,7 +104,7 @@ const buildWorkspace = async (
  *       => ~/.automate/cache/{type}.{namespace}.{name}@{version}/provider/mod.ts
  */
 
-const buildPackage = async (pack: pkg.Package) => {
+const buildPackage = async (pack: automate.pkg.Package) => {
   const packageFile = pack.cfgPath;
 
   if (BUILT.has(packageFile)) {
@@ -258,14 +272,20 @@ const buildDep = async (
  * Action handler `build` command
  * @param options
  */
-const action = async (_options: any) => {
+const action = async (_options: any, path: string) => {
   // TODO: add a --watch flag
 
-  const cfg = await config.loadAutomateConfig(configFile);
+  let pkgFile = configFile;
+  if (path !== '.') {
+    path = Deno.realPathSync(path);
+    pkgFile = `${path}/${configFileName}`;
+  }
+
+  const cfg = await config.loadAutomateConfig(pkgFile);
   if (cfg.workspace !== undefined) {
     cfg.validateWorkspace();
-    log.info(`Building workspace for ${configFile}`);
-    const result = await buildWorkspace(cfg.workspace).catch(err => {
+    log.info(`Building workspace for ${pkgFile}`);
+    const result = await buildWorkspace(path, cfg.workspace).catch(err => {
       throw err;
     });
     log.debug(`Build workspace result ${result}`);
@@ -273,7 +293,7 @@ const action = async (_options: any) => {
     // we have a standalone package (provider/recipe)
     // validate package config before loading from path
     cfg.validatePackage();
-    const pack = await Package.fromPath(configFile);
+    const pack = await Package.fromPath(pkgFile);
     const result = await buildPackage(pack);
     log.debug(`Build package result ${result}`);
   }
@@ -284,4 +304,5 @@ const action = async (_options: any) => {
  */
 export const build = new cliffy.Command()
   .description('Build the current workspace or package')
+  .arguments('<path:string>')
   .action(action);

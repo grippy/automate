@@ -20,18 +20,21 @@
 - [x] `automate provider init` Using `-ns` with `-n`: error: Option "-n" can only occur once, but was found several times.
 
 ## alpha-2
-- [x] should detect if initializeProvider is async or sync
-- [x] mv cli/constants.ts to core
+- [x] Should detect if initializeProvider is async or sync
+- [x] Move `cli/constants.ts` to automate core
 - [x] Refactor build command into Package class
 - [x] `automate recipe run` ideate how building/running recipes should work
 - [x] Move automate config loading to `config.ts`
 - [x] Move directory `core/src/test` => `core/test`
 - [x] Move all file loading out of the cli commands module and into the method that uses the code
-- [x] properly handle `Deno.errors.NotFound` errors
-- [x] `automate.test` takes a `path` now
+- [x] Properly handle `Deno.errors.NotFound` errors
+- [x] `automate.test` takes a `path` now and resolves member paths
+- [x] `automate.build` takes a `path` now and resolves member paths
+- [x] Deno github actions workflow
+- [x] Top-level Deno tasks: `install-cli`, `cli-*-test-workspace`
+- [x] Rename `AUTOMATE_CORE_MOD_PATH` => `AUTOMATE_CORE` and change it the root core path.
 
 ## Next
-
 - [ ] Make sure all commands work
 - [ ] Make a `watch` command for running build
 - [ ] Replace Eta w/ Handlebars
@@ -53,7 +56,6 @@
 
 ## Package Stuff
 - [ ] Publish release version 0.0.0 as git tag
-- [ ] Publish `automate-examples` project
 - [ ] Build packages stored on the web
 
 ## CLI Stuff

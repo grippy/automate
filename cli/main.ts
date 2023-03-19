@@ -4,10 +4,10 @@ import { build, clean, provider, recipe, test, workspace } from './cmd/mod.ts';
 
 const main = new Command()
   .name('automate')
-  // This enables toggling between local dev & release versions
+  // This configures a path for local development
   .env(
-    'AUTOMATE_CORE_MOD_PATH=<value:string>',
-    'Set path to the `automate` TypeScript module used for code-gen import statements.',
+    'AUTOMATE_CORE=<value:string>',
+    'Set path to `automate/core` directory on the local file system',
     {
       global: true,
       prefix: 'AUTOMATE_',
