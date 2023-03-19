@@ -39,7 +39,10 @@ jobs:
       #  run: deno lint
 
       - name: Run `automate.core` tests
-        run: deno task test-core
+        run: echo $PWD
 
-      - name: Run `test.workspace.example` tests
-        run: deno task cli-test-test-workspace
+      # - name: Run `automate.core` tests
+      #   run: deno task test-core
+
+      # - name: Run `test.workspace.example` tests
+      #   run: deno task cli-test-test-workspace

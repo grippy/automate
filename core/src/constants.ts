@@ -13,7 +13,9 @@ export const automateCacheDir = `${automateRootDir}/cache`;
 export const automateRegistryDir = `${automateRootDir}/registry`;
 
 // TODO: make this configurable
-export const automateCoreModPath = '/Users/gmelton/work/automate/core/mod.ts';
+export const automateCoreDir = Deno.env.get('AUTOMATE_CORE') ||
+  '/Users/gmelton/work/automate/core';
+export const automateCoreModPath = `${automateCoreDir}/mod.ts`;
 
 // Verify package namespace passes formatting check
 // Allowable: a-z A-Z 0-9 .
