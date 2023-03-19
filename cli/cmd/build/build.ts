@@ -4,8 +4,6 @@ const {
   constants,
   logging,
   pkg,
-  record,
-  template,
   template2,
   yaml,
 } = automate;
@@ -20,12 +18,8 @@ const log = logging.Category('automate.build');
 
 // // constants used to build packages
 const automateCacheDir = constants.automateCacheDir;
-// const automateCoreModPath = constants.automateCoreModPath;
 const automateRegistryDir = constants.automateRegistryDir;
 const automateRootDir = constants.automateRootDir;
-// const automatePackageNamespaceVerifier =
-//   constants.automatePackageNamespaceVerifier;
-// const automatePackageNameVerifier = constants.automatePackageNameVerifier;
 const configFile = constants.configFile;
 const configFileName = constants.configFileName;
 
@@ -100,12 +94,14 @@ const buildWorkspace = async (
  *
  * Building a package file does the following for Providers[P] and Recipes[R]:
  * - [P & R] Creates ~/.automate directory
- * - [P & R] Copies package/Automate.yaml => ~/.automate/cache/{type}.{namespace}.{name}@{version}/Automate.yaml
+ * - [P & R] Copies {package}/Automate.yaml => ~/.automate/cache/{type}.{namespace}.{name}@{version}/Automate.yaml
  * - [P & R] Creates ~/.automate/cache/{type}.{namespace}.{name}@{version}/values.yaml from `package.values`
+ * - [P & R] Creates cli module ~/.automate/cache/{type}.{namespace}.{name}@{version}/mod.ts
  * - [P & R] Creates cli module ~/.automate/cache/{type}.{namespace}.{name}@{version}/mod.ts
  * - [P & R] Creates registry entry ~/.automate/registry/{type}.{namespace}.{name}@{version}.yaml
  *    - This contains meta details about the package and pointers to the cache mod.ts
- * - [R] Generate RecipeProvider module from Recipe.yaml
+ * - [R] Generate RecipeProvider provider module from Recipe.yaml
+ *       => ~/.automate/cache/{type}.{namespace}.{name}@{version}/provider/mod.ts
  */
 
 const buildPackage = async (pack: pkg.Package) => {
@@ -263,6 +259,8 @@ const buildDep = async (
  * @param options
  */
 const action = async (_options: any) => {
+  // TODO: add a --watch flag
+
   const cfg = await config.loadAutomateConfig(configFile);
   if (cfg.workspace !== undefined) {
     cfg.validateWorkspace();
@@ -282,7 +280,7 @@ const action = async (_options: any) => {
 };
 
 /**
- * Build call sub-command
+ * Build sub-command
  */
 export const build = new cliffy.Command()
   .description('Build the current workspace or package')

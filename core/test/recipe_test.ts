@@ -1,5 +1,5 @@
-import { asserts } from '../../deps_dev.ts';
-import { recipe } from '../../mod.ts';
+import { asserts } from '../deps_dev.ts';
+import { recipe } from '../mod.ts';
 
 type Deps = recipe.Deps;
 type Opts = recipe.Opts;

@@ -1,11 +1,11 @@
-import { logging, provider } from '../../../../../mod.ts';
+import { logging, provider } from '../../../../mod.ts';
 
 // create logger
-const log = logging.Category('name2');
+const log = logging.Category('name3');
 
 type Values = Record<string, unknown>;
 
-class ProviderName2 implements provider.Provider {
+class ProviderName3 implements provider.Provider {
   constructor() {}
 
   // deno-lint-ignore require-await
@@ -17,6 +17,6 @@ class ProviderName2 implements provider.Provider {
 
 // deno-lint-ignore require-await
 export const initializeProvider = async (): Promise<provider.Provider> => {
-  const instance = new ProviderName2();
+  const instance = new ProviderName3();
   return Promise.resolve(instance);
 };

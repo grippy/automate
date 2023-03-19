@@ -1,6 +1,6 @@
 {
 "tasks": {
     "test-cli": "deno test --allow-read --allow-env ./cli",
-    "test-core": "deno test --allow-read --allow-env ./core/src"
+    "test-core": "deno test --allow-read --allow-env ./core"
   }
 }

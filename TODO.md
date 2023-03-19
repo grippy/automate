@@ -25,20 +25,22 @@
 - [x] Refactor build command into Package class
 - [x] `automate recipe run` ideate how building/running recipes should work
 - [x] Move automate config loading to `config.ts`
+- [ ] Move directory `core/src/test` => `core/test`
+- [ ] Make sure all commands work
+- [ ] Make a `watch` command for running build
 
 # TODO
 
 ## Recipes
-- [ ] Add Step `sh` for inputs
-- [ ] Figure out passing values works for recipe steps
+- [ ] Add Step field name `sh` for running shell commands
+- [ ] Figure out how passing values into recipe steps works
+- [ ] Figure out how registering template helpers works
 
 ## Template
 - [ ] Replace Eta w/ Handlebars
 
 ## Core `version.ts`
 - [ ] Create a placeholder for now. This file should have the automate version in it (along with the minimum Deno version allowed)
-
-## Provider wrapper
 
 ## Automate.yaml
 - [ ] `Automate.yaml` adds `recipe.steps.step.name`, `recipe.steps.step.description`, and `recipe.steps.step.dep`
@@ -63,6 +65,7 @@
 
 ## Testing
 - [ ] More core tests are needed.
+- [ ] Providers should have a `-h` command
 
 ## Github Action
 - [ ] Wire up the test suit

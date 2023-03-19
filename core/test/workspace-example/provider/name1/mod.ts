@@ -1,4 +1,4 @@
-import { logging, provider } from '../../../../../mod.ts';
+import { logging, provider } from '../../../../mod.ts';
 
 // create logger
 const log = logging.Category('name1');
