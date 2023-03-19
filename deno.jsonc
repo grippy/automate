@@ -1,7 +1,7 @@
 {
   "tasks": {
     "cli-build-test-workspace": "cargo watch -c -s \"deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build\" -C $PWD/core/test/workspace-example -w .",
-    "cli-test-test-workspace": "cd $PWD/core/test/workspace-example && deno run -A $PWD/cli/main.ts  test",
+    "cli-test-test-workspace": "deno run -A $PWD/cli/main.ts test $PWD/core/test/workspace-example",
     "test-cli": "deno test --allow-read --allow-env ./cli",
     "test-cli-watch": "deno test --allow-read --allow-env --watch ./cli",
     "test-core": "deno test --allow-read --allow-env ./core",

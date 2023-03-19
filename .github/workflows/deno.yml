@@ -47,8 +47,8 @@ jobs:
       - name: Run `automate.core` tests
         run: echo $PWD && echo ${AUTOMATE_CORE}
 
-      # - name: Run `automate.core` tests
-      #   run: deno task test-core
+      - name: Run `automate.core` tests
+        run: deno task test-core
 
-      # - name: Run `test.workspace.example` tests
-      #   run: deno task cli-test-test-workspace
+      - name: Run `test.workspace.example` tests
+        run: deno task cli-test-test-workspace

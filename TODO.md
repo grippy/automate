@@ -28,20 +28,22 @@
 - [x] Move directory `core/src/test` => `core/test`
 - [x] Move all file loading out of the cli commands module and into the method that uses the code
 - [x] properly handle `Deno.errors.NotFound` errors
+- [x] `automate.test` takes a `path` now
+
+## Next
+
 - [ ] Make sure all commands work
 - [ ] Make a `watch` command for running build
+- [ ] Replace Eta w/ Handlebars
 
-# TODO
-
-## Recipes
+### Recipes
 - [ ] Add Step field name `sh` for running shell commands
 - [ ] Add Step field name `ts` for generating typescript code
 - [ ] Reading ENV variables should merge package + top-level dependency ENV vars
 - [ ] Figure out how passing values into recipe steps works
 - [ ] Figure out how registering template helpers works
 
-## Template
-- [ ] Replace Eta w/ Handlebars
+# TODO
 
 ## Core `version.ts`
 - [ ] Create a placeholder for now. This file should have the automate version in it (along with the minimum Deno version allowed)
