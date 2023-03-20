@@ -57,7 +57,7 @@ jobs:
         run: deno task install-cli && automate --help
 
       - name: Run `automate workspace init`
-        run: automate workspace init /tmp/my-workspace --namespace=test.my.workspace
+        run: automate workspace init /tmp/my-workspace
 
       - name: Run `automate provider init`
         run: automate provider init /tmp/my-workspace/provider/foo --namespace=test.my.workspace
