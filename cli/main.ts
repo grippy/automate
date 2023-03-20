@@ -4,6 +4,15 @@ import { build, clean, provider, recipe, test, workspace } from './cmd/mod.ts';
 
 const main = new Command()
   .name('automate')
+  // This configures a path for local development
+  .env(
+    'AUTOMATE_CORE=<value:string>',
+    'Set path to `automate/core` directory on the local file system',
+    {
+      global: true,
+      prefix: 'AUTOMATE_',
+    },
+  )
   .env(
     'AUTOMATE_ROOT=<value:string>',
     'Set path to `.automate` directory (defaults to $HOME/.automate)',

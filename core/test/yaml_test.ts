@@ -1,6 +1,8 @@
-import * as asserts from 'https://deno.land/std@0.174.0/testing/asserts.ts';
-import { ToInstance, Type } from '../record.ts';
-import { load, loadAll, mergeLoad } from '../yaml.ts';
+import { asserts } from '../deps_dev.ts';
+import { record, yaml } from '../mod.ts';
+
+const { ToInstance, Type } = record;
+const { load, loadAll, mergeLoad } = yaml;
 
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
@@ -21,7 +23,10 @@ class Root {
   mytest!: MyTest;
 }
 
-const testDoc = function(doc: any) {
+const testDoc = function(
+  // deno-lint-ignore no-explicit-any
+  doc: any,
+) {
   const root = ToInstance(Root, doc);
   asserts.assertInstanceOf(root, Root, 'expected type Root');
   asserts.assertInstanceOf(root.mytest, MyTest, 'expected type MyTest');

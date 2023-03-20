@@ -1,20 +1,15 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, template } from '../../../core/src/mod.ts';
+import { automate, cliffy } from '../../deps.ts';
 
-// setup logger
-const log = logging.Category('automate.cli.workspace');
+const { logging, template2 } = automate;
+const log = logging.Category('automate.workspace.init');
 
+// scaffolding...
 const automateConfigFileName = 'Automate.yaml';
 const automateConfig = `
 workspace:
   name: {{ name }}
   # list paths to workspace packages
   members: []
-`;
-
-const gitIgnoreFileName = '.gitignore';
-const gitIgnore = `
-.automate/
 `;
 
 const denoJsonFileName = 'deno.jsonc';
@@ -32,6 +27,7 @@ const denoJson = `
  * @param options
  * @param path
  */
+// deno-lint-ignore no-explicit-any
 const action = (options: any, path: string) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
@@ -56,9 +52,11 @@ const action = (options: any, path: string) => {
   try {
     Deno.readDirSync(path);
     log.debug(`Path ${path} exists... skip making directory`);
-  } catch (e: Deno.errors.NotFound) {
-    log.debug(`Create path ${path}...`);
-    Deno.mkdirSync(path, { recursive: true });
+  } catch (e: unknown) {
+    if (e instanceof Deno.errors.NotFound) {
+      log.debug(`Create path ${path}...`);
+      Deno.mkdirSync(path, { recursive: true });
+    }
   }
 
   // strip slash off the end so we can create file paths...
@@ -90,11 +88,6 @@ const action = (options: any, path: string) => {
       data: { name: name },
     },
     {
-      fileName: `${path}/${gitIgnoreFileName}`,
-      file: gitIgnore,
-      data: {},
-    },
-    {
       fileName: `${path}/${denoJsonFileName}`,
       file: denoJson,
       data: {},
@@ -109,10 +102,12 @@ const action = (options: any, path: string) => {
       }
       Deno.readTextFileSync(file.fileName);
       log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: Deno.errors.NotFound) {
-      log.info(`Writing file ${file.fileName}`);
-      const data = template.render(file.file, file.data);
-      Deno.writeTextFileSync(file.fileName, data);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template2.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
     }
   }
 };
@@ -120,8 +115,10 @@ const action = (options: any, path: string) => {
 /**
  * Workspace init sub-command
  */
-export const init = new Command()
-  .description('Init new workspace project.')
+export const init = new cliffy.Command()
+  .description(
+    'Initialize new automate workspace at the specified path. Use `.` for the current directory.',
+  )
   .arguments('<path:string>')
   .option('-n, --name <name:string>', 'Set workspace name')
   .option(

@@ -1,10 +1,8 @@
-import {
-  parse,
-  parseAll,
-  stringify,
-} from 'https://deno.land/std@0.174.0/encoding/yaml.ts';
+// deno-lint-ignore-file no-explicit-any
+import { deno_lodash, yaml } from '../deps.ts';
 
-import { ld } from 'https://deno.land/x/deno_lodash@v0.1.0/mod.ts';
+const lodash = deno_lodash.ld;
+const stringify = yaml.stringify;
 
 class YamlLoader {
   private decoder = new TextDecoder('utf-8');
@@ -17,13 +15,13 @@ class YamlLoader {
   // parse a file that defines a single yaml object
   async parseFile(filePath: string): Promise<any> {
     const text = await this.read(filePath);
-    return await parse(text);
+    return await yaml.parse(text);
   }
 
   // parse a file that defines a multiple yaml objects
   async parseFileAll(filePath: string): Promise<any> {
     const text = await this.read(filePath);
-    return await parseAll(text);
+    return await yaml.parseAll(text);
   }
 }
 
@@ -44,13 +42,13 @@ const loadAll = async function(filepath: string): Promise<any> {
 // and then layer changes on top of them.
 const mergeLoad = async function(files: string[]): Promise<any> {
   let merged = {};
-  const loaded = await Promise.all(ld.map(files, load));
-  ld.forEach(loaded, function(values: Promise<any>) {
+  const loaded = await Promise.all(lodash.map(files, load));
+  lodash.forEach(loaded, function(values: Promise<any>) {
     if (merged === null) {
       merged = values;
       return;
     }
-    ld.merge(merged, values);
+    lodash.merge(merged, values);
   });
   return merged;
 };

@@ -1,21 +1,19 @@
-import * as asserts from 'https://deno.land/std@0.174.0/testing/asserts.ts';
-import * as config from '../config.ts';
-import * as logging from '../logging.ts';
-import { Expose, ToInstance, Type } from '../record.ts';
-import { load } from '../yaml.ts';
+import { asserts } from '../deps_dev.ts';
+import { config, logging, record, yaml } from '../mod.ts';
+const { ToInstance } = record;
+const { load } = yaml;
 
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
 
-const log = logging.Category('config.test');
+const _log = logging.Category('config.test');
 
-const testAutomateConfig = function(plain: any) {
+const testAutomateConfig = function(plain: record.Plain) {
   const cfg = ToInstance(config.AutomateConfig, plain);
   cfg.convertTypes();
-  console.log(cfg);
+  // console.log(cfg);
   const deps = cfg.dependencies;
   if (deps !== undefined) {
-    console.log('Log dependencies');
     asserts.assertInstanceOf(
       deps.provider.get('name1'),
       config.Dependency,
@@ -50,6 +48,7 @@ const testAutomateConfig = function(plain: any) {
       );
     }
   }
+
   const provider = cfg.provider;
   if (provider !== undefined) {
     // console.log('Log provider commands...');

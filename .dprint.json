@@ -6,16 +6,25 @@
   },
   "json": {
     "indentWidth": 2,
-    "associations": [
-      "deno.jsonc",
-      ".dprint.json"
-    ]
+    "associations": ["**/deno.jsonc", ".dprint.json"]
   },
   "markdown": {},
   "includes": [
-    "**/*.{ts,tsx,js,jsx,cjs,mjs,json,md}"
+    "./cli/**/**/*.ts",
+    "./cli/**/*.ts",
+    "./cli/*.ts",
+    "./core/**/**/*.ts",
+    "./core/**/*.ts",
+    "./core/*.ts",
+    "**/*.{ts,tsx,js,json,jsx,cjs,mjs,json,md}"
   ],
   "excludes": [
+    "ARCHITECTURE.md",
+    "MISC.md",
+    "TODO.md",
+    "./boneyard",
+    "./cli/template",
+    "./.vscode/settings.json",
     "**/node_modules",
     "**/*-lock.json",
     "**/deno.lock"

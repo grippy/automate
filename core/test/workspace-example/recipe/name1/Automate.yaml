@@ -1,0 +1,42 @@
+# Package details...
+package:
+  type: recipe
+  namespace: test.workspace.example
+  name: name1
+  version: "0.0.0"
+  description: |
+    My new recipe description.
+  permissions: [--allow-read, --allow-env]
+
+# Package dependencies...
+dependencies:
+  provider:
+    name1: "../../provider/name1"
+    name2:
+      path: "../../provider/name2"
+    name3:
+      path: "../../provider/name3"
+  recipe:
+    name2:
+      path: "../../recipe/name2"
+
+# Default recipe input values...
+values:
+  key1: value1
+  key2: value2
+
+# Recipe definition
+recipe:
+  steps:
+    step1:
+      - dep: provider.name1
+        cmd: greet
+        in:
+          arg1: "{{ values.key1 }}"
+        out: myGreeting
+      - dep: provider.name2
+        cmd: sayGreeting
+        in:
+          name: Grippy
+          greet: "{{ state.myGreeting }}"
+        out: sayGreetingSaid

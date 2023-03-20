@@ -3,10 +3,13 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# This workflow will install Deno then run `deno lint` and `deno test`.
+# This workflow will install Deno`.
 # For more information see: https://github.com/denoland/setup-deno
 
 name: Deno
+
+env:
+  AUTOMATE_CORE: ${{ github.workspace }}/core
 
 on:
   push:
@@ -31,12 +34,65 @@ jobs:
         with:
           deno-version: v1.x
 
-      # Uncomment this step to verify the use of 'deno fmt' on each commit.
-      # - name: Verify formatting
-      #  run: deno fmt --check
-      
-      # - name: Run linter
-      #  run: deno lint
-      
-      - name: Run tests
-        run: deno task test
+      # runs `dprint check`
+      # See: https://github.com/dprint/check/blob/main/action.yml
+      - name: Setup dprint
+        uses: dprint/check@v2.2
+        with:
+          dprint-version: 0.30.3
+
+      - name: Print env
+        run: printenv | sort
+
+      - name: Run lint checks
+        run: deno task lint
+
+      - name: Run `automate.core` tests
+        run: deno task test-core
+
+      - name: Run `test.workspace.example` tests
+        run: deno task cli-test-test-workspace
+
+      - name: Build `test.workspace.example` namespace packages
+        run: deno task cli-build-test-workspace
+
+      - name: Lint `test.workspace.example` registry cache files
+        run: deno task test-lint-registry-cache
+
+      - name: Install `automate` cli
+        run: deno task install-cli
+
+      - name: Call `automate --help` menus
+        run: |
+          automate -h
+          automate build -h
+          automate clean -h
+          automate provider -h
+          automate test -h
+          automate recipe -h
+          automate workspace -h
+
+      - name: Run `automate provider list`
+        run: automate provider list
+
+      - name: Run `automate provider show`
+        run: automate provider show provider.test.workspace.example.name1@0.0.0
+
+      - name: Run `automate provider run`
+        run: automate provider run provider.test.workspace.example.name1@0.0.0 greet
+
+      - name: Run `automate recipe run`
+        run: automate recipe run recipe.test.workspace.example.name1@0.0.0
+
+      - name: Run `automate workspace init`
+        run: automate workspace init /tmp/github.action
+
+      - name: Run `automate provider init`
+        run: automate provider init /tmp/github.action/provider/foo --namespace=test.github.action
+
+      - name: Run `automate recipe init`
+        run: automate recipe init /tmp/github.action/recipe/bar --namespace=test.github.action
+
+      - name: Run `automate clean`
+        # no-prompt
+        run: automate clean --force

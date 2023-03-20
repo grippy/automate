@@ -1,36 +1,47 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { Table } from 'https://deno.land/x/cliffy@v0.25.7/table/mod.ts';
-import { logging, yaml } from '../../../core/src/mod.ts';
-import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, constants } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
 
-const log = logging.Category('automate.provider');
+const log = logging.Category('automate.provider.list');
 
 const action = async () => {
   // read all the files inside the registry directory
   // filter only providers
 
-  let rows = [];
+  const rows = [];
   for (const entry of Deno.readDirSync(automateRegistryDir)) {
     if (!entry.isFile) {
       continue;
     }
 
+    // read the registry file
     const regFileName = `${automateRegistryDir}/${entry.name}`;
-    const registry = await yaml.load(regFileName);
-    if (registry.type !== 'provider') {
+
+    // load the registry package file from json
+    let pack;
+    try {
+      pack = (await import(regFileName, {
+        assert: { type: 'json' },
+      })).default;
+    } catch (e: unknown) {
+      log.error(`No registry package exists at ${regFileName}`);
+      throw e;
+    }
+
+    // only display providers
+    if (pack.cfg.package.type !== 'provider') {
       continue;
     }
     rows.push([
-      registry.name,
-      registry.description,
-      registry.permissions.join(' '),
+      pack.name,
+      pack.cfg.package.description,
+      pack.cfg.package.permissions.join(' '),
     ]);
   }
   console.log('');
 
-  const table1 = new Table()
+  const table1 = new cliffy.Table()
     .header(['Registry'])
     .body([[automateRegistryDir]])
     .maxColWidth(200)
@@ -40,9 +51,8 @@ const action = async () => {
   table1.render();
 
   console.log('');
-
   console.log('Current list of installed providers...');
-  const table2 = new Table()
+  const table2 = new cliffy.Table()
     .header(['Name', 'Description', 'Permissions'])
     .body(rows)
     .maxColWidth(200)
@@ -57,6 +67,6 @@ const action = async () => {
 /**
  * Provider list sub-command
  */
-export const list = new Command()
+export const list = new cliffy.Command()
   .description('List provider packages stored in the registry')
   .action(action);

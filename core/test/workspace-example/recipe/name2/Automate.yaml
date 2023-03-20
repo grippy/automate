@@ -1,0 +1,29 @@
+# Package details...
+package:
+  type: recipe
+  namespace: test.workspace.example
+  name: name2
+  version: "0.0.0"
+  description: |
+    My new recipe description.
+
+  permissions: [--allow-read, --allow-env]
+
+# Package dependencies...
+dependencies:
+  provider:
+    name1: "../../provider/name1"
+
+# Default recipe input values...
+values:
+  key1: value1
+
+# Recipe definition
+recipe:
+  steps: {}
+  # step1:
+  #   - dep: provider.name1
+  #     cmd: get
+  #     in:
+  #       arg1: "hello"
+  #     out: state.key1

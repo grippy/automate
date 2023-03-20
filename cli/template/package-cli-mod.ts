@@ -1,24 +1,40 @@
-// Automate-generated file: {{ cli_mod }}
+// Automate-generated file: {{ registry.cachePackageModFileName }}
 import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, provider as prov, yaml } from '{{ automate_core_mod }} ';
-import { initializeProvider } from '{{ package_mod }}';
+import {
+  logging,
+  provider as prov,
+  yaml,
+} from '{{ registry.automateCoreMod }} ';
 
-// package variables
-const packageFile = '{{ package_file }}';
-const packageValuesFile = '{{ package_values_file }}';
-const packageName =
-  '{{ package.type }}.{{ package.namespace }}.{{ package.name }}@{{ package.version }}';
+// dprint-ignore-start
+{{#ifeq cfg.package.type 'provider' }}
+import { initializeProvider } from '{{ registry.packageProviderMod }}';
+{{else}}
+import { initializeProvider } from '{{ registry.packageRecipeProviderMod }}';
+{{/ifeq}}
+// dprint-ignore-end
+
+// package variables for {{ cfg.package.type }}
+const packageValuesFile = '{{ registry.cachePackageValuesFileName }}';
+const packageName = '{{ name }}';
 
 // cli logger
 const log = logging.Category(packageName);
 
 // test if cmd is async or not...
 const AsyncFunction = (async () => {}).constructor;
-const isAsync = (fn: Function): boolean => {
+const isAsync = (
+  // deno-lint-ignore ban-types
+  fn: Function
+): boolean => {
   return fn instanceof AsyncFunction;
 };
 
-const action = async (options: any, cmd: string) => {
+const action = async (
+  // deno-lint-ignore no-explicit-any
+  options: any,
+  cmd: string
+) => {
   // debug ENV variables
   log.debug(`Current ENV variables ${JSON.stringify(Deno.env.toObject())}`);
 
@@ -35,41 +51,40 @@ const action = async (options: any, cmd: string) => {
 
   // call provider command
   const provider: prov.Provider = await initializeProvider();
-  log.info(`Calling ${cmd}`);
-
-  const callCmd = provider[cmd];
+  log.info(`Calling provider.${cmd}`);
+  // @ts-ignore: ignore 'any' type error
+  const fn = provider[cmd];
   // does this cmd exist?
-  if (callCmd === undefined) {
+  if (fn === undefined) {
     throw new Error(`Provider ${packageName} has no command named ${cmd}`);
   }
+  // we lost `this` context above to verify the cmd exists
+  // bind fn with provider & values to add it back...
+  const bound = fn.bind(provider, values);
+  let result: unknown = null;
 
   // is this method async?
-  let result: any = null;
-  if (isAsync(callCmd)) {
-    result = await callCmd(values);
+  if (isAsync(fn)) {
+    result = await bound();
     if (typeof result === 'object') {
       result = JSON.stringify(result);
     }
     log.info(`Output: ${result}`);
   } else {
-    result = callCmd(values);
+    result = bound();
     if (typeof result === 'object') {
       result = JSON.stringify(result);
     }
     log.info(`Output: ${result}`);
   }
   // TODO: use --output-file to write to disk?
+
 };
 
-// TODO: add --input-format option
-// TODO: add --output-format option
-// TODO: add --output-file option for writing to cmd result to disk
-
-// TODO: figure out how to deal with output values
 const main = new Command()
   .name(packageName)
-  .version('{{ package.version }}')
-  .description('Run package')
+  .version('{{ cfg.package.version }}')
+  .description('Run package cli')
   .arguments('<cmd:string>')
   .option(
     '-f, --value <value:string>',

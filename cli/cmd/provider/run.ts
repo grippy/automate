@@ -1,8 +1,7 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, yaml } from '../../../core/src/mod.ts';
-import * as constants from '../../constants.ts';
-const automateRegistryDir = constants.automateRegistryDir;
+import { automate, cliffy } from '../../deps.ts';
 
+const { logging, constants, yaml } = automate;
+const automateRegistryDir = constants.automateRegistryDir;
 const log = logging.Category('automate.provider.run');
 
 /**
@@ -14,6 +13,7 @@ const log = logging.Category('automate.provider.run');
  */
 
 const action = async (
+  // deno-lint-ignore no-explicit-any
   options: any,
   name: string,
   cmd: string,
@@ -21,24 +21,27 @@ const action = async (
   log.debug(
     `provider run ${name} ${cmd} w/ options ${JSON.stringify(options)}`,
   );
-  const regFileName = `${automateRegistryDir}/${name}.yaml`;
-  let registry;
+  const regFileName = `${automateRegistryDir}/${name}.json`;
+  let pack;
   try {
-    registry = await yaml.load(regFileName);
-  } catch (err) {
+    pack = (await import(regFileName, {
+      assert: { type: 'json' },
+    })).default;
+  } catch (e: unknown) {
     log.error(`No registry package exists at ${regFileName}`);
-    throw err;
+    throw e;
   }
-  if (registry.type !== 'provider') {
+
+  if (pack.cfg.package.type !== 'provider') {
     log.warn(`Package with ${name} isn't a provider.`);
     return;
   }
 
   // skip first four args of Deno.args
   // and pass everything else to the run cmd as the options
-  let opts: string[] = [];
+  const opts: string[] = [];
   if (Deno.args.length >= 4) {
-    for (var i = 4; i < Deno.args.length; i++) {
+    for (let i = 4; i < Deno.args.length; i++) {
       opts.push(Deno.args[i]);
     }
   }
@@ -49,11 +52,13 @@ const action = async (
   // - format env variables
 
   // read registry permissions for this package
-  const permissions = registry.permissions || [];
+  const permissions = pack.cfg.package.permissions || [];
 
   // merge values files for this package so we can
   // properly set the ENV variables if they exist
-  const valueFiles = [registry.package_values_file].concat(options.value || []);
+  const valueFiles = [pack.registry.cachePackageValuesFileName].concat(
+    options.value || [],
+  );
   log.debug('Merging value files', valueFiles);
   let values = { env: {} };
   try {
@@ -70,13 +75,13 @@ const action = async (
     'deno',
     'run',
     ...permissions,
-    registry.cli_mod,
+    pack.registry.cachePackageModFileName,
     cmd,
     ...opts,
   ];
 
   log.info(
-    `running "${runCmd.join(' ')}" w/ ENV ${JSON.stringify(env)}`,
+    `Running "${runCmd.join(' ')}" w/ ENV ${JSON.stringify(env)}`,
   );
 
   // We skip trying to read and work with
@@ -84,8 +89,9 @@ const action = async (
   // what is sent to stdout. So it becomes impossible
   // to work with the cmd response unless we do something
   // whacky with how its formatted. Instead, if instructed,
-  // we should tell have the program we call capture its
-  // output and save it to disk.
+  // we should have the program we call capture its
+  // output and save it to disk. This should be useful for
+  // working with `Provider` commands.
 
   // run the command....
   const p = Deno.run({
@@ -100,15 +106,15 @@ const action = async (
 /**
  * Provider run sub-command
  */
-export const run = new Command()
+export const run = new cliffy.Command()
   .name('run')
   .description(
-    'Run provider name@version cmd',
+    'Run provider [name@version] [cmd]',
   )
   .arguments('<name:string> <cmd:string>')
   .option(
     '-f, --value=<value:string>',
-    'Specify values in a YAML file or a URL(can specify multiple) (default [])',
+    'Specify values in a YAML file (can specify multiple) (default [])',
     {
       collect: true,
     },

@@ -1,8 +1,8 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
+import { cliffy } from '../../deps.ts';
 import { init } from './init.ts';
 
 /**
  * Workspace command
  */
-export const workspace = new Command()
+export const workspace = new cliffy.Command()
   .command('init', init);

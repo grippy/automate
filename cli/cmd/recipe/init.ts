@@ -1,14 +1,13 @@
-import { Command } from 'https://deno.land/x/cliffy@v0.25.7/command/mod.ts';
-import { logging, template } from '../../../core/src/mod.ts';
-import * as constants from '../../constants.ts';
+import { automate, cliffy } from '../../deps.ts';
 
-const log = logging.Category('automate.recipe');
+const { constants, logging, pkg, template2 } = automate;
+const log = logging.Category('automate.recipe.init');
 
 const automatePackageNamespaceVerifier =
   constants.automatePackageNamespaceVerifier;
 const automatePackageNameVerifier = constants.automatePackageNameVerifier;
 
-const automateConfigFileName = 'Automate.yaml';
+const automateConfigFileName = constants.configFileName;
 const automateConfig = `
 # Package details...
 package:
@@ -22,7 +21,9 @@ package:
   # Deno permissions
   # https://deno.land/manual@v1.30.3/basics/permissions
   permissions: [
-    --allow-read
+    --allow-env,
+    --allow-read,
+    --allow-run,
     # --allow-env=<allow-env>,
     # --allow-sys=<allow-sys>,
     # --allow-hrtime,
@@ -52,32 +53,80 @@ dependencies:
 values:
   key1: value1
 
-# Recipe definition
+# Recipe definition...
+# 'steps:' defaults to an empty object.
+# (uncomment once ready to add something)
 recipe:
-  steps:
-    # step1:
-    #  - cmd: provider/name1/get
-    #    in:
-    #      arg1: "{{ step1arg1 }}"
-    #    out: state.key1
-`;
+  steps: {}
+  # steps:
+  #   step1:
+  #     - name: one
+  #       description: |
+  #         This step does the following...
+  #       dep: provider.name1
+  #       cmd: get
+  #       in:
+  #         arg1: {{ step1_one_arg1 }}
+  #       out: key2
 
-const gitIgnoreFileName = '.gitignore';
-const gitIgnore = `
-.automate/
+  #     - name: two
+  #       description: |
+  #         This step does the following...
+  #       dep: provider.name1
+  #       cmd: get
+  #       in:
+  #         arg1: {{ step1_two_arg1 }}
+  #       out:
 `;
 
 const readmeFileName = 'README.md';
 const readme = `
-# Provider: {{ namespace }}.{{ name }}
+# Recipe: {{ pack.name }}
 `;
+
+type WriteFile = {
+  comment: string;
+  fileName: string;
+  file: string;
+  data: Record<string, unknown>;
+};
+
+/**
+ * `write` scaffold files
+ * @param files
+ * @param force
+ */
+const write = (files: WriteFile[], force: boolean) => {
+  for (const k in files) {
+    const file = files[k];
+    try {
+      if (force) {
+        throw new Deno.errors.NotFound();
+      }
+      Deno.readTextFileSync(file.fileName);
+      log.warn(`File ${file.fileName} already exists, skipping it.`);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template2.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
+    }
+  }
+};
 
 /**
  * Action initializes a new workspace
  * @param options
  * @param path
  */
-const action = (options: any, path: string) => {
+const action = async (
+  // deno-lint-ignore no-explicit-any
+  options: any,
+  path: string,
+  name?: string,
+  namespace?: string,
+) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
   }
@@ -101,9 +150,11 @@ const action = (options: any, path: string) => {
   try {
     Deno.readDirSync(path);
     log.debug(`Path ${path} exists... skip making directory.`);
-  } catch (e: Deno.errors.NotFound) {
-    log.debug(`Create path ${path}...`);
-    Deno.mkdirSync(path, { recursive: true });
+  } catch (e: unknown) {
+    if (e instanceof Deno.errors.NotFound) {
+      log.debug(`Create path ${path}...`);
+      Deno.mkdirSync(path, { recursive: true });
+    }
   }
 
   // strip slash off the end so we can create file paths...
@@ -113,7 +164,6 @@ const action = (options: any, path: string) => {
   // use absolute path from here on out...
   path = Deno.realPathSync(path);
 
-  let namespace = options.namespace;
   if (namespace === undefined) {
     namespace = 'my.namespace';
   }
@@ -123,7 +173,6 @@ const action = (options: any, path: string) => {
     );
   }
 
-  let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
     if (parts.length > 1) {
@@ -140,62 +189,56 @@ const action = (options: any, path: string) => {
     );
   }
 
-  const writeFiles = [
-    {
-      fileName: `${path}/${automateConfigFileName}`,
-      file: automateConfig,
-      data: {
-        namespace: namespace,
-        name: name,
-        step1arg1: '{{ $.utils.fn1(values.key1) }}',
-      },
-    },
-    {
-      fileName: `${path}/${readmeFileName}`,
-      file: readme,
-      data: { namespace: namespace, name: name },
-    },
-    {
-      fileName: `${path}/${gitIgnoreFileName}`,
-      file: gitIgnore,
-      data: {},
-    },
-  ];
-
   if (options.force) {
     log.warn('Force creating files...');
   }
 
-  for (const k in writeFiles) {
-    const file = writeFiles[k];
-    try {
-      if (options.force) {
-        throw new Deno.errors.NotFound();
-      }
-      Deno.readTextFileSync(file.fileName);
-      log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: Deno.errors.NotFound) {
-      log.info(`Writing file ${file.fileName}`);
-      const data = template.render(file.file, file.data);
-      Deno.writeTextFileSync(file.fileName, data);
-    }
-  }
+  const pkgFile = `${path}/${automateConfigFileName}`;
+  const writeConfig = [
+    {
+      comment: 'Write Automate.yaml',
+      fileName: pkgFile,
+      file: automateConfig,
+      data: {
+        namespace: namespace,
+        name: name,
+        step1_one_arg1: '{{ values.key1 }}',
+        step1_two_arg1: '{{ state.key2 }}',
+      },
+    },
+  ];
+
+  write(writeConfig, options.force);
+
+  const pack = await pkg.Package.fromPath(pkgFile);
+  pack.cfg.validatePackage();
+
+  const writeReadme = [{
+    comment: 'Write README.md',
+    fileName: `${path}/${readmeFileName}`,
+    file: readme,
+    data: { pack },
+  }];
+
+  write(writeReadme, options.force);
 
   log.info(
     'If this new package is a member of a workspace then please remember to add it to the workspace.members list.',
   );
-  // TODO: log how to build and run recipes
+
+  // TODO: show how to build and run recipes
+  // with notes examples...
 };
 
 /**
- * Provider init sub-command
+ * Recipe init sub-command
  */
-export const init = new Command()
+export const init = new cliffy.Command()
   .description('Init new recipe package.')
   .arguments('<path:string>')
   .option(
-    '-ns, --namespace <namespace:string>',
-    'Set provider package namespace',
+    '--namespace <namespace:string>',
+    'Set recipe package namespace',
   )
   .option('-n, --name <name:string>', 'Set recipe package name')
   .option(

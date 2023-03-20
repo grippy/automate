@@ -1,8 +1,10 @@
+[![Deno](https://github.com/grippy/automate/actions/workflows/deno.yml/badge.svg)](https://github.com/grippy/automate/actions/workflows/deno.yml)
+
 # Automate
 
 Automate is a [Deno](https://deno.land/) "framework" and simple package installer for automating things with TypeScript.
 
-To accomplish this, you create `providers` and `recipes`. A provider operates on input and optionally can return output. A provider may make API calls, read/write files, work with secrets, build/deploy code, call other CLI programs, you name it. Providers expose their functionality as class instances which are wrapped as CLI programs.
+To accomplish this, you create `providers` and `recipes`. A provider operates on input and optionally returns output. A provider may make API calls, read/write files, work with secrets, build/deploy code, call other CLI programs, you name it. Providers expose their functionality as class instances which are wrapped as CLI programs.
 
 Recipes construct templated steps for running provider commands. (How this works is still TBD).
 
@@ -10,7 +12,7 @@ Both providers and recipes are written as Automate "packages" to make code reuse
 
 # Inspiration
 
-Do you ever find yourself repeating tasks across multiple repos or file systems? System or DevOps types tasks come mind here. 
+Do you ever find yourself repeating tasks across multiple repos or file systems? System or DevOps types tasks come mind here.
 
 Automate draws inspiration from the following things:
 
