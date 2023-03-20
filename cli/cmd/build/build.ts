@@ -148,7 +148,7 @@ const buildPackage = async (pack: automate.pkg.Package) => {
     cachePackageModFileName,
     cachePackageValuesFileName,
     registryFileName,
-  } = registryPkg.registry;
+  } = pack.registry;
 
   // Make package cache dir...
   // default here is for Provider
@@ -175,7 +175,7 @@ const buildPackage = async (pack: automate.pkg.Package) => {
 
   // now we need to generate the recipe provider
   // if we're building a recipe...
-  if (pack.cfg.package.type === 'recipe') {
+  if (pack.cfg.package?.type === 'recipe') {
     // create a sub-folder for this provider/mod.ts
     // file we need to auto-generate
     mkDirs([pack.registry.packageRecipeProviderPath]);

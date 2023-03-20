@@ -1,6 +1,6 @@
 import { automate, cliffy } from '../../deps.ts';
 
-const { logging, template } = automate;
+const { logging, template2 } = automate;
 const log = logging.Category('automate.workspace.init');
 
 // scaffolding...
@@ -10,11 +10,6 @@ workspace:
   name: {{ name }}
   # list paths to workspace packages
   members: []
-`;
-
-const gitIgnoreFileName = '.gitignore';
-const gitIgnore = `
-.automate/
 `;
 
 const denoJsonFileName = 'deno.jsonc';
@@ -92,11 +87,6 @@ const action = (options: any, path: string) => {
       data: { name: name },
     },
     {
-      fileName: `${path}/${gitIgnoreFileName}`,
-      file: gitIgnore,
-      data: {},
-    },
-    {
       fileName: `${path}/${denoJsonFileName}`,
       file: denoJson,
       data: {},
@@ -114,7 +104,7 @@ const action = (options: any, path: string) => {
     } catch (e: unknown) {
       if (e instanceof Deno.errors.NotFound) {
         log.info(`Writing file ${file.fileName}`);
-        const data = template.render(file.file, file.data);
+        const data = template2.render(file.file, file.data);
         Deno.writeTextFileSync(file.fileName, data);
       }
     }
