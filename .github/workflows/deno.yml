@@ -72,7 +72,7 @@ jobs:
         run: automate provider show provider.test.workspace.example.name1@0.0.0
 
       - name: Run `automate provider run`
-        run: automate provider run provider.test.workspace.example.name1@0.0.0
+        run: automate provider run provider.test.workspace.example.name1@0.0.0 cmd1
 
       - name: Run `automate recipe run`
         run: automate recipe run recipe.test.workspace.example.name1@0.0.0
