@@ -50,20 +50,11 @@ jobs:
       - name: Run `test.workspace.example` tests
         run: deno task cli-test-test-workspace
 
-      - name: Build `test.workspace.example` packages
+      - name: Build `test.workspace.example` namespace packages
         run: deno task cli-build-test-workspace
 
       - name: Install `automate` cli and call `automate --help`
         run: deno task install-cli && automate --help
-
-      - name: Run `automate workspace init`
-        run: automate workspace init /tmp/my-workspace
-
-      - name: Run `automate provider init`
-        run: automate provider init /tmp/my-workspace/provider/foo --namespace=test.my.workspace
-
-      - name: Run `automate recipe init`
-        run: automate recipe init /tmp/my-workspace/recipe/bar --namespace=test.my.workspace
 
       - name: Run `automate provider list`
         run: automate provider list
@@ -72,7 +63,19 @@ jobs:
         run: automate provider show provider.test.workspace.example.name1@0.0.0
 
       - name: Run `automate provider run`
-        run: automate provider run provider.test.workspace.example.name1@0.0.0 cmd1
+        run: automate provider run provider.test.workspace.example.name1@0.0.0 greet
 
       - name: Run `automate recipe run`
         run: automate recipe run recipe.test.workspace.example.name1@0.0.0
+
+      - name: Run `automate workspace init`
+        run: automate workspace init /tmp/github.action
+
+      - name: Run `automate provider init`
+        run: automate provider init /tmp/github.action/provider/foo --namespace=test.github.action
+
+      - name: Run `automate recipe init`
+        run: automate recipe init /tmp/github.action/recipe/bar --namespace=test.github.action
+
+      - name: Run `automate clean`
+        run: automate clean
