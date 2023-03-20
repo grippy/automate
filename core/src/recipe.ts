@@ -141,13 +141,13 @@ export class Recipe {
   // how they were added to the steps map...
   // Returns a map of results from each step where the step name
   // is the key.
-  async cook(values: Values): Promise<CookResponse> {
+  async cook(values?: Values): Promise<CookResponse> {
     // console.log(`<Recipe name="${this.name}">`);
     for (const [name, step] of this.steps) {
       // console.log(`<Step name="${name}">`);
       try {
         const result = await step(
-          { state: this.state, values: values },
+          { state: this.state, values: values || {} },
           this.deps,
         );
         this.results[name] = result;
