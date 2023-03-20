@@ -115,6 +115,7 @@ const write = (files: WriteFile[], force: boolean) => {
  * @param path
  */
 const action = async (
+  // deno-lint-ignore no-explicit-any
   options: any,
   path: string,
   name?: string,

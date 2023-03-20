@@ -158,9 +158,10 @@ class Provider {
   commands: ProviderCmds = new ProviderCmds();
 }
 
-class ProviderDataTypes extends Map<string, ProviderDataType> {}
-
+// deno-lint-ignore no-unused-vars
 class ProviderDataType extends Map<string, string> {}
+
+class ProviderDataTypes extends Map<string, ProviderDataType> {}
 
 class ProviderCmds extends Map<string, ProviderCmd> {
   @Exclude()

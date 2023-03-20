@@ -4,7 +4,11 @@ const { logging, constants } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
 const log = logging.Category('automate.provider.show');
 
-const action = async (_options: any, name: string) => {
+const action = async (
+  // deno-lint-ignore no-explicit-any
+  _options: any,
+  name: string,
+) => {
   // read all the files inside the registry directory
   // filter only providers
   const regFileName = `${automateRegistryDir}/${name}.json`;

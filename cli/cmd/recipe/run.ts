@@ -13,6 +13,7 @@ const log = logging.Category('automate.recipe.run');
  */
 
 const action = async (
+  // deno-lint-ignore no-explicit-any
   options: any,
   name: string,
 ) => {

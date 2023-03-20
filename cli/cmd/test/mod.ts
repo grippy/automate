@@ -13,6 +13,7 @@ const configFile = constants.configFile;
  * @param options
  */
 
+// deno-lint-ignore no-explicit-any
 const action = async (_options: any, path: string) => {
   // load the Automate config from the `path` directory
   let pkgFile = configFile;

@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-# This workflow will install Deno then run `deno lint` and `deno test`.
+# This workflow will install Deno`.
 # For more information see: https://github.com/denoland/setup-deno
 
 name: Deno
@@ -34,15 +34,17 @@ jobs:
         with:
           deno-version: v1.x
 
+      - name: Print env
+        run: printenv | sort
+
+      # We currently use dprint for format checking...
+      # move this to a different workflow
       # Uncomment this step to verify the use of 'deno fmt' on each commit.
       # - name: Verify formatting
       #  run: deno fmt --check
 
-      # - name: Run linter
-      #  run: deno lint
-
-      - name: Print env
-        run: printenv | sort
+      - name: Run lint checks
+        run: deno task lint
 
       - name: Run `automate.core` tests
         run: deno task test-core
@@ -52,6 +54,9 @@ jobs:
 
       - name: Build `test.workspace.example` namespace packages
         run: deno task cli-build-test-workspace
+
+      - name: Lint `test.workspace.example` registry cache files
+        run: deno task test-lint-registry-cache
 
       - name: Install `automate` cli
         run: deno task install-cli

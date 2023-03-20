@@ -6,9 +6,9 @@ const { load } = yaml;
 // current directory for this file
 const dirname = new URL('.', import.meta.url).pathname;
 
-const log = logging.Category('config.test');
+const _log = logging.Category('config.test');
 
-const testAutomateConfig = function(plain: any) {
+const testAutomateConfig = function(plain: record.Plain) {
   const cfg = ToInstance(config.AutomateConfig, plain);
   cfg.convertTypes();
   // console.log(cfg);

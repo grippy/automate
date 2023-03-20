@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 // import Handlebars from 'https://esm.sh/handlebars@4.7.6';
 // const template = Handlebars.compile('{{foo}}');
 // console.log(template({ foo: 'bar' }));

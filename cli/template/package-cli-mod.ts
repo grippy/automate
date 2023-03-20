@@ -14,8 +14,7 @@ import { initializeProvider } from '{{ registry.packageRecipeProviderMod }}';
 {{/ifeq}}
 // dprint-ignore-end
 
-// package variables
-const packageType = '{{ cfg.package.type }}';
+// package variables for {{ cfg.package.type }}
 const packageValuesFile = '{{ registry.cachePackageValuesFileName }}';
 const packageName = '{{ name }}';
 
@@ -24,11 +23,18 @@ const log = logging.Category(packageName);
 
 // test if cmd is async or not...
 const AsyncFunction = (async () => {}).constructor;
-const isAsync = (fn: Function): boolean => {
+const isAsync = (
+  // deno-lint-ignore ban-types
+  fn: Function
+): boolean => {
   return fn instanceof AsyncFunction;
 };
 
-const action = async (options: any, cmd: string) => {
+const action = async (
+  // deno-lint-ignore no-explicit-any
+  options: any,
+  cmd: string
+) => {
   // debug ENV variables
   log.debug(`Current ENV variables ${JSON.stringify(Deno.env.toObject())}`);
 
@@ -55,7 +61,7 @@ const action = async (options: any, cmd: string) => {
   // we lost `this` context above to verify the cmd exists
   // bind fn with provider & values to add it back...
   const bound = fn.bind(provider, values);
-  let result: any = null;
+  let result: unknown = null;
 
   // is this method async?
   if (isAsync(fn)) {

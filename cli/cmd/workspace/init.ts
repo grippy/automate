@@ -27,6 +27,7 @@ const denoJson = `
  * @param options
  * @param path
  */
+// deno-lint-ignore no-explicit-any
 const action = (options: any, path: string) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");

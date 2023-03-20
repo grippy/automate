@@ -11,6 +11,7 @@ const log = logging.Category('automate.clean');
  */
 
 const action = async (
+  // deno-lint-ignore no-explicit-any
   options: any,
 ) => {
   if (!options.force) {

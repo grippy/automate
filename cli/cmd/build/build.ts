@@ -272,7 +272,11 @@ const buildDep = async (
  * Action handler `build` command
  * @param options
  */
-const action = async (_options: any, path: string) => {
+const action = async (
+  // deno-lint-ignore no-explicit-any
+  _options: any,
+  path: string,
+) => {
   // TODO: add a --watch flag
 
   let pkgFile = configFile;

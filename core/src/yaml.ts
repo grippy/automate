@@ -1,5 +1,4 @@
-// import { ld } from 'https://deno.land/x/deno_lodash@v0.1.0/mod.ts';
-
+// deno-lint-ignore-file no-explicit-any
 import { deno_lodash, yaml } from '../deps.ts';
 
 const lodash = deno_lodash.ld;

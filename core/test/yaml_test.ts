@@ -23,7 +23,10 @@ class Root {
   mytest!: MyTest;
 }
 
-const testDoc = function(doc: any) {
+const testDoc = function(
+  // deno-lint-ignore no-explicit-any
+  doc: any,
+) {
   const root = ToInstance(Root, doc);
   asserts.assertInstanceOf(root, Root, 'expected type Root');
   asserts.assertInstanceOf(root.mytest, MyTest, 'expected type MyTest');

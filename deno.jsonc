@@ -3,9 +3,10 @@
     "cli-build-test-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/core/test/workspace-example",
     "cli-test-test-workspace": "deno run -A $PWD/cli/main.ts test $PWD/core/test/workspace-example",
     "cli-watch-test-workspace": "cargo watch -c -s \"deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build .\" -C $PWD/core/test/workspace-example -w .",
-
     "compile-cli-x86_64-apple-darwin": "deno compile --allow-run=deno --allow-read --allow-write --allow-env --target x86_64-apple-darwin --output automate-x86_64-apple-darwin $PWD/cli/main.ts",
     "install-cli": "deno install --allow-run=deno --allow-read --allow-write --allow-env --root /usr/local --name automate --force $PWD/cli/main.ts",
+    "lint": "deno lint core/ && deno lint cli/ --ignore=cli/template/",
+    "test-lint-registry-cache": "./scripts/deno-lint-registry-cache.sh",
     "test-cli": "deno test --allow-read --allow-env ./cli",
     "test-cli-watch": "deno test --allow-read --allow-env --watch ./cli",
     "test-core": "deno test --allow-read --allow-env ./core",
