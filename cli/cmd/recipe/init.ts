@@ -72,7 +72,7 @@ recipe:
 
 const readmeFileName = 'README.md';
 const readme = `
-# Provider: {{ namespace }}.{{ name }}
+# Recipe: {{ namespace }}.{{ name }}
 `;
 
 /**
@@ -80,7 +80,12 @@ const readme = `
  * @param options
  * @param path
  */
-const action = (options: any, path: string) => {
+const action = (
+  options: any,
+  path: string,
+  name?: string,
+  namespace?: string,
+) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
   }
@@ -118,7 +123,6 @@ const action = (options: any, path: string) => {
   // use absolute path from here on out...
   path = Deno.realPathSync(path);
 
-  let namespace = options.namespace;
   if (namespace === undefined) {
     namespace = 'my.namespace';
   }
@@ -128,7 +132,6 @@ const action = (options: any, path: string) => {
     );
   }
 
-  let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
     if (parts.length > 1) {
@@ -160,11 +163,6 @@ const action = (options: any, path: string) => {
       file: readme,
       data: { namespace: namespace, name: name },
     },
-    // {
-    //   fileName: `${path}/${gitIgnoreFileName}`,
-    //   file: gitIgnore,
-    //   data: {},
-    // },
   ];
 
   if (options.force) {
@@ -191,7 +189,9 @@ const action = (options: any, path: string) => {
   log.info(
     'If this new package is a member of a workspace then please remember to add it to the workspace.members list.',
   );
-  // TODO: log how to build and run recipes
+
+  // TODO: show how to build and run recipes
+  // with notes examples...
 };
 
 /**

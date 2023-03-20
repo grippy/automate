@@ -20,14 +20,17 @@ const action = async (
     `provider run ${name} w/ options ${JSON.stringify(options)}`,
   );
   const regFileName = `${automateRegistryDir}/${name}.json`;
-  let pkg;
+  let pack;
   try {
-    pkg = await yaml.load(regFileName);
-  } catch (err) {
+    pack = (await import(regFileName, {
+      assert: { type: 'json' },
+    })).default;
+  } catch (e: unknown) {
     log.error(`No registry package exists at ${regFileName}`);
-    throw err;
+    throw e;
   }
-  if (pkg.cfg.package.type !== 'recipe') {
+
+  if (pack.cfg.package.type !== 'recipe') {
     log.warn(`Package ${name} isn't a recipe.`);
     return;
   }
@@ -47,11 +50,11 @@ const action = async (
   // - format env variables
 
   // read registry permissions for this package
-  const permissions = pkg.cfg.package.permissions || [];
+  const permissions = pack.cfg.package.permissions || [];
 
   // merge values files for this package so we can
   // properly set the ENV variables if they exist
-  const valueFiles = [pkg.registry.cachePackageValuesFileName].concat(
+  const valueFiles = [pack.registry.cachePackageValuesFileName].concat(
     options.value || [],
   );
   log.debug('Merging value files', valueFiles);
@@ -70,7 +73,7 @@ const action = async (
     'deno',
     'run',
     ...permissions,
-    pkg.registry.cachePackageModFileName,
+    pack.registry.cachePackageModFileName,
     'cook',
     ...opts,
   ];

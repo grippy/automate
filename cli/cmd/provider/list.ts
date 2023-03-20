@@ -3,7 +3,7 @@ import { automate, cliffy } from '../../deps.ts';
 const { logging, constants } = automate;
 const automateRegistryDir = constants.automateRegistryDir;
 
-const _log = logging.Category('automate.provider.list');
+const log = logging.Category('automate.provider.list');
 
 const action = async () => {
   // read all the files inside the registry directory
@@ -19,18 +19,24 @@ const action = async () => {
     const regFileName = `${automateRegistryDir}/${entry.name}`;
 
     // load the registry package file from json
-    const pkg = (await import(regFileName, {
-      assert: { type: 'json' },
-    })).default;
+    let pack;
+    try {
+      pack = (await import(regFileName, {
+        assert: { type: 'json' },
+      })).default;
+    } catch (e: unknown) {
+      log.error(`No registry package exists at ${regFileName}`);
+      throw e;
+    }
 
     // only display providers
-    if (pkg.cfg.package.type !== 'provider') {
+    if (pack.cfg.package.type !== 'provider') {
       continue;
     }
     rows.push([
-      pkg.name,
-      pkg.cfg.package.description,
-      pkg.cfg.package.permissions.join(' '),
+      pack.name,
+      pack.cfg.package.description,
+      pack.cfg.package.permissions.join(' '),
     ]);
   }
   console.log('');

@@ -95,6 +95,10 @@ class RegistryEntry {
     // path to registry file
     this.registryFileName = `${automateRegistryDir}/${opts.registryName}.json`;
   }
+
+  toObject(): record.Plain {
+    return record.FromInstance(this);
+  }
 }
 
 class Package {
