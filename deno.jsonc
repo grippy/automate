@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "dprint-check": "./scripts/dprint-check.sh",
     "cli-build-test-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/core/test/workspace-example",
     "cli-test-test-workspace": "deno run -A $PWD/cli/main.ts test $PWD/core/test/workspace-example",
     "cli-watch-test-workspace": "cargo watch -c -s \"deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build .\" -C $PWD/core/test/workspace-example -w .",

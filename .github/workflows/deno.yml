@@ -34,6 +34,11 @@ jobs:
         with:
           deno-version: v1.x
 
+      - name: Setup dprint
+        uses: dprint/check@v2.2
+        with:
+          dprint-version: 0.30.3
+
       - name: Print env
         run: printenv | sort
 
@@ -45,6 +50,9 @@ jobs:
 
       - name: Run lint checks
         run: deno task lint
+
+      - name: Run lint checks
+        run: deno task dprint-check
 
       - name: Run `automate.core` tests
         run: deno task test-core
