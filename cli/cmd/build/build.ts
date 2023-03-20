@@ -81,6 +81,7 @@ const buildWorkspace = async (
   for (const memberPath of memberPaths) {
     const packageFile = `${memberPath}/${configFileName}`;
     const pack = await pkg.Package.fromPath(packageFile);
+    pack.cfg.validatePackage();
     const result = await buildPackage(pack);
     log.debug(`Call buildPackage result: ${result}`);
   }

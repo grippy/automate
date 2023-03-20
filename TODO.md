@@ -56,6 +56,8 @@
 - [ ] `automate build` Add recipe yaml step field `ts` for generating typescript code
 - [ ] `automate build` Template helpers:
     - [ ] Figure out how registering template helpers works
+- [ ] `delete` `cli/template/registry-package.json` and do this in the build step
+- [ ] `refactor` cli code and move copypasta into `utils.ts` module.
 
 ## alpha-4
 - [ ] `release-recipe` define recipe yaml for release code to github
