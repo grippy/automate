@@ -6,7 +6,7 @@ set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 AUTOMATE_CORE=${AUTOMATE_CORE:-$SCRIPT_DIR/..}
-ARGS="./core/*.ts ./core/**/*.ts ./core/**/**/*.ts ./cli/*.ts ./cli/**/*.ts ./cli/**/**/*.ts --excludes ./cli/template/"
+ARGS="README.md ./core/*.ts ./core/**/*.ts ./core/**/**/*.ts ./cli/*.ts ./cli/**/*.ts ./cli/**/**/*.ts --excludes ./cli/template/"
 
 echo 'dprint checking these files...'
 cd $AUTOMATE_CORE
