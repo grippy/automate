@@ -78,4 +78,5 @@ jobs:
         run: automate recipe init /tmp/github.action/recipe/bar --namespace=test.github.action
 
       - name: Run `automate clean`
-        run: automate clean
+        # no-prompt
+        run: automate clean --force
