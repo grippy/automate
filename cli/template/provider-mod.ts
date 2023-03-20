@@ -17,7 +17,7 @@ const log = logging.Category('{{ pack.name }}');
 
 type Values = Record<string, unknown>;
 
-class {{ registry.providerClassName }} implements provider.Provider {
+class {{ pack.registry.providerClassName }} implements provider.Provider {
 
   constructor() {}
 
@@ -47,6 +47,6 @@ class {{ registry.providerClassName }} implements provider.Provider {
 // All providers must export this function...
 // deno-lint-ignore require-await
 export const initializeProvider = async (): Promise<provider.Provider> => {
-  const instance = new {{ registry.providerClassName }}();
+  const instance = new {{ pack.registry.providerClassName }}();
   return Promise.resolve(instance);
 };

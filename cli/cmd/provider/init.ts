@@ -1,9 +1,8 @@
-import { automate, casing, cliffy } from '../../deps.ts';
+import { automate, cliffy } from '../../deps.ts';
 
-const { logging, constants, template } = automate;
+const { logging, constants, pkg, template2 } = automate;
 const log = logging.Category('automate.provider.init');
 
-const automateCoreModPath = constants.automateCoreModPath;
 const automatePackageNamespaceVerifier =
   constants.automatePackageNamespaceVerifier;
 const automatePackageNameVerifier = constants.automatePackageNameVerifier;
@@ -81,27 +80,46 @@ provider:
 /* README */
 const readmeFileName = 'README.md';
 const readme = `
-# Provider: {{ namespace }}.{{ name }}
+# Provider: {{ pack.name }}
 `;
 
-/* New provider module */
-const packageModuleFileName = 'mod.ts';
-const packageModuleFileTemplate: string = Deno.readTextFileSync(
-  `${dirname}/../../template/provider-mod.ts`,
-);
+type WriteFile = {
+  comment: string;
+  fileName: string;
+  file: string;
+  data: Record<string, unknown>;
+};
 
-/* New provider module test */
-const packageModuleTestFileName = 'mod_test.ts';
-const packageModuleTestFileTemplate: string = Deno.readTextFileSync(
-  `${dirname}/../../template/provider-mod-test.ts`,
-);
+const write = (files: WriteFile[], force: boolean) => {
+  for (const k in files) {
+    const file = files[k];
+    try {
+      if (force) {
+        throw new Deno.errors.NotFound();
+      }
+      Deno.readTextFileSync(file.fileName);
+      log.warn(`File ${file.fileName} already exists, skipping it.`);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template2.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
+    }
+  }
+};
 
 /**
  * Action initializes a new workspace
  * @param options
  * @param path
  */
-const action = (options: any, path: string) => {
+const action = async (
+  options: any,
+  path: string,
+  name?: string,
+  namespace?: string,
+) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
   }
@@ -139,8 +157,6 @@ const action = (options: any, path: string) => {
 
   // Get the name/namespace of the project.
   // and pick a default it doesn't exist.
-
-  let namespace = options.namespace;
   if (namespace === undefined) {
     namespace = 'my.namespace';
   }
@@ -150,7 +166,6 @@ const action = (options: any, path: string) => {
     );
   }
 
-  let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
     if (parts.length > 1) {
@@ -167,42 +182,13 @@ const action = (options: any, path: string) => {
     );
   }
 
-  const writeFiles = [
+  const pkgFile = `${path}/${automateConfigFileName}`;
+  const writeConfig = [
     {
       comment: 'Generate Automate.yaml',
-      fileName: `${path}/${automateConfigFileName}`,
+      fileName: pkgFile,
       file: automateConfig,
       data: {
-        namespace: namespace,
-        name: name,
-      },
-    },
-    {
-      comment: 'Generate README.me',
-      fileName: `${path}/${readmeFileName}`,
-      file: readme,
-      data: {
-        namespace: namespace,
-        name: name,
-      },
-    },
-    {
-      comment: 'Generate mod.ts',
-      fileName: `${path}/${packageModuleFileName}`,
-      file: packageModuleFileTemplate,
-      data: {
-        automate_core_mod: automateCoreModPath,
-        className: `Provider${casing.pascalCase(name)}`,
-        namespace: namespace,
-        name: name,
-      },
-    },
-    {
-      comment: 'Generate mod_test.ts',
-      fileName: `${path}/${packageModuleTestFileName}`,
-      file: packageModuleTestFileTemplate,
-      data: {
-        className: `Provider${casing.pascalCase(name)}`,
         namespace: namespace,
         name: name,
       },
@@ -212,23 +198,49 @@ const action = (options: any, path: string) => {
   if (options.force) {
     log.warn('Force creating files...');
   }
+  // write config so we can read back as a Package
+  write(writeConfig, options.force);
 
-  for (const k in writeFiles) {
-    const file = writeFiles[k];
-    try {
-      if (options.force) {
-        throw new Deno.errors.NotFound();
-      }
-      Deno.readTextFileSync(file.fileName);
-      log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: unknown) {
-      if (e instanceof Deno.errors.NotFound) {
-        log.info(`Writing file ${file.fileName}`);
-        const data = template.render(file.file, file.data);
-        Deno.writeTextFileSync(file.fileName, data);
-      }
-    }
-  }
+  // TODO: use `pack` to render these files change to template2
+  /* New provider module */
+  const packageModuleFileName = 'mod.ts';
+  const packageModuleFileTemplate: string = Deno.readTextFileSync(
+    `${dirname}/../../template/provider-mod.ts`,
+  );
+
+  /* New provider module test */
+  const packageModuleTestFileName = 'mod_test.ts';
+  const packageModuleTestFileTemplate: string = Deno.readTextFileSync(
+    `${dirname}/../../template/provider-mod-test.ts`,
+  );
+
+  // Read the pkg.Package file
+  // load dependency as package
+  const pack = await pkg.Package.fromPath(pkgFile);
+  pack.cfg.validatePackage();
+
+  const writeFiles = [
+    {
+      comment: 'Generate README.me',
+      fileName: `${path}/${readmeFileName}`,
+      file: readme,
+      data: { pack },
+    },
+    {
+      comment: 'Generate mod.ts',
+      fileName: `${path}/${packageModuleFileName}`,
+      file: packageModuleFileTemplate,
+      data: { pack },
+    },
+    {
+      comment: 'Generate mod_test.ts',
+      fileName: `${path}/${packageModuleTestFileName}`,
+      file: packageModuleTestFileTemplate,
+      data: { pack },
+    },
+  ];
+
+  write(writeFiles, options.force);
 
   log.info(
     'If this new package is a member of a workspace then please remember to add it to the workspace.members list.',

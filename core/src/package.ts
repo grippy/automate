@@ -182,7 +182,7 @@ class Package {
   async loadDependenciesMap(
     map: undefined | Map<string, string | config.Dependency>,
   ): Promise<void> {
-    if (map === undefined) {
+    if (map === undefined || map === null) {
       return;
     }
     for (const [key, value] of map.entries()) {

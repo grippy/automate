@@ -1,13 +1,13 @@
 import { automate, cliffy } from '../../deps.ts';
 
-const { constants, logging, template } = automate;
+const { constants, logging, pkg, template2 } = automate;
 const log = logging.Category('automate.recipe.init');
 
 const automatePackageNamespaceVerifier =
   constants.automatePackageNamespaceVerifier;
 const automatePackageNameVerifier = constants.automatePackageNameVerifier;
 
-const automateConfigFileName = 'Automate.yaml';
+const automateConfigFileName = constants.configFileName;
 const automateConfig = `
 # Package details...
 package:
@@ -60,27 +60,67 @@ recipe:
   steps: {}
   # steps:
   #   step1:
-  #     - name: some-name
+  #     - name: one
   #       description: |
   #         This step does the following...
   #       dep: provider.name1
   #       cmd: get
   #       in:
-  #         arg1: "{{ step1.arg1 }}"
-  #       out: state.key1
+  #         arg1: {{ step1_one_arg1 }}
+  #       out: key2
+
+  #     - name: two
+  #       description: |
+  #         This step does the following...
+  #       dep: provider.name1
+  #       cmd: get
+  #       in:
+  #         arg1: {{ step1_two_arg1 }}
+  #       out:
 `;
 
 const readmeFileName = 'README.md';
 const readme = `
-# Recipe: {{ namespace }}.{{ name }}
+# Recipe: {{ pack.name }}
 `;
+
+type WriteFile = {
+  comment: string;
+  fileName: string;
+  file: string;
+  data: Record<string, unknown>;
+};
+
+/**
+ * `write` scaffold files
+ * @param files
+ * @param force
+ */
+const write = (files: WriteFile[], force: boolean) => {
+  for (const k in files) {
+    const file = files[k];
+    try {
+      if (force) {
+        throw new Deno.errors.NotFound();
+      }
+      Deno.readTextFileSync(file.fileName);
+      log.warn(`File ${file.fileName} already exists, skipping it.`);
+    } catch (e: unknown) {
+      if (e instanceof Deno.errors.NotFound) {
+        log.info(`Writing file ${file.fileName}`);
+        const data = template2.render(file.file, file.data);
+        Deno.writeTextFileSync(file.fileName, data);
+      }
+    }
+  }
+};
 
 /**
  * Action initializes a new workspace
  * @param options
  * @param path
  */
-const action = (
+const action = async (
   options: any,
   path: string,
   name?: string,
@@ -148,43 +188,38 @@ const action = (
     );
   }
 
-  const writeFiles = [
-    {
-      fileName: `${path}/${automateConfigFileName}`,
-      file: automateConfig,
-      data: {
-        namespace: namespace,
-        name: name,
-        step1arg1: '{{ $.utils.fn1(values.key1) }}',
-      },
-    },
-    {
-      fileName: `${path}/${readmeFileName}`,
-      file: readme,
-      data: { namespace: namespace, name: name },
-    },
-  ];
-
   if (options.force) {
     log.warn('Force creating files...');
   }
 
-  for (const k in writeFiles) {
-    const file = writeFiles[k];
-    try {
-      if (options.force) {
-        throw new Deno.errors.NotFound();
-      }
-      Deno.readTextFileSync(file.fileName);
-      log.warn(`File ${file.fileName} already exists, skipping it.`);
-    } catch (e: unknown) {
-      if (e instanceof Deno.errors.NotFound) {
-        log.info(`Writing file ${file.fileName}`);
-        const data = template.render(file.file, file.data);
-        Deno.writeTextFileSync(file.fileName, data);
-      }
-    }
-  }
+  const pkgFile = `${path}/${automateConfigFileName}`;
+  const writeConfig = [
+    {
+      comment: 'Write Automate.yaml',
+      fileName: pkgFile,
+      file: automateConfig,
+      data: {
+        namespace: namespace,
+        name: name,
+        step1_one_arg1: '{{ values.key1 }}',
+        step1_two_arg1: '{{ state.key2 }}',
+      },
+    },
+  ];
+
+  write(writeConfig, options.force);
+
+  const pack = await pkg.Package.fromPath(pkgFile);
+  pack.cfg.validatePackage();
+
+  const writeReadme = [{
+    comment: 'Write README.md',
+    fileName: `${path}/${readmeFileName}`,
+    file: readme,
+    data: { pack },
+  }];
+
+  write(writeReadme, options.force);
 
   log.info(
     'If this new package is a member of a workspace then please remember to add it to the workspace.members list.',
