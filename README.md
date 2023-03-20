@@ -1,3 +1,5 @@
+[![Deno](https://github.com/grippy/automate/actions/workflows/deno.yml/badge.svg)](https://github.com/grippy/automate/actions/workflows/deno.yml)
+
 # Automate
 
 Automate is a [Deno](https://deno.land/) "framework" and simple package installer for automating things with TypeScript.
