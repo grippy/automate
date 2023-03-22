@@ -79,9 +79,7 @@ provider:
 
 /* README */
 const readmeFileName = 'README.md';
-const readme = `
-# Provider: {{ pack.name }}
-`;
+const readme = `# Provider: {{ pack.name }}`;
 
 type WriteFile = {
   comment: string;
