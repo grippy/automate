@@ -44,7 +44,8 @@ const mergeValues = function(vals: Values[]): Values {
 
 // Render templates... hacky for now
 // JSON.stringify(values) => render => JSON.parse
-// TODO: iterate values and only
+// TODO: iterate values and only render properties
+// with template variables.
 const render = function (opts: Opts, values: Values): Values {
   const tmpl = JSON.stringify(values);
   const json = __template.render(tmpl, opts);
