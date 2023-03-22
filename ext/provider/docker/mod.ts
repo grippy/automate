@@ -33,10 +33,10 @@ export type RunValues = {
         options?: string[];
         // TBD... do we need these if we
         // have options
-        volumes?: string;
-        entrypoint?: string;
-        workdir?: string;
-        env?: string[];
+        // volumes?: string;
+        // entrypoint?: string;
+        // workdir?: string;
+        // env?: string[];
       };
     };
   };
@@ -72,21 +72,13 @@ export class ProviderDocker extends provider.Provider {
     const image = values.provider.docker.run.image;
     const cmd = values.provider.docker.run.cmd || [];
     const options = values.provider.docker.run.options || [];
-    // figure out if we want to break these out into sep
-    // properties or just use options for now
-    const volumes = values.provider.docker.run.volumes || [];
-    // const entrypoint = values.provider.docker.run.entrypoint;
-    const env = values.provider.docker.run.env || [];
 
-    // // check if entrypoint exists in options:
-    // if (entrypoint !== undefined && options.indexOf('--entrypoint') < 0) {
-    //   options.push(`--entrypoint=${entrypoint}`);
-    // }
-    // // set env variables
-    // const runEnv = env.map((keyVal: string) => {
-    //   // TODO check if key val already exists in the options
-    //   return `--env ${keyVal}`;
-    // });
+    // TODO: figure out if we want to break these out into sep
+    // properties or just use options for now
+    // const workdir = values.provider.docker.run.workdir;
+    // const volumes = values.provider.docker.run.volumes || [];
+    // const entrypoint = values.provider.docker.run.entrypoint;
+    // const env = values.provider.docker.run.env || [];
 
     // use /bin/bash
     let runCmd: string[];
@@ -106,8 +98,6 @@ export class ProviderDocker extends provider.Provider {
       cmd: [
         this.cmd,
         'run',
-        ...env,
-        ...volumes,
         ...options,
         image,
         ...runCmd,
@@ -115,7 +105,10 @@ export class ProviderDocker extends provider.Provider {
     };
     log.debug(`Running shell: ${JSON.stringify(opts)}`);
     console.log('');
-    console.log(`#[${opts.cmd.join(' ')}]`);
+    console.log(
+      `%c[${opts.cmd.join(' ')}]`,
+      'color: green; text-decoration: underline',
+    );
     console.log('');
     const result = await this.sh(opts);
     console.log('');
