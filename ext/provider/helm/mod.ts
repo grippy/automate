@@ -1,5 +1,7 @@
-import { logging, provider } from '/Users/gmelton/work/automate/core/mod.ts';
-import { provider_docker as docker } from '/Users/gmelton/work/automate/ext/mod.ts';
+import { automate } from '../../deps.ts';
+import { provider_docker as docker } from '../../mod.ts';
+
+const { logging } = automate;
 
 type ProviderDocker = docker.ProviderDocker;
 type DockerRunValues = docker.RunValues;
@@ -49,7 +51,7 @@ type UninstallValues = {
   };
 };
 
-class ProviderHelm extends provider.Provider {
+class ProviderHelm extends automate.provider.Provider {
   /**
    * This provider runs helm commands using docker.
    */
@@ -214,7 +216,9 @@ class ProviderHelm extends provider.Provider {
 }
 
 // All providers must export this function...
-export const initializeProvider = async (): Promise<provider.Provider> => {
+export const initializeProvider = async (): Promise<
+  automate.provider.Provider
+> => {
   const _docker = await docker.initializeProvider();
   const instance = new ProviderHelm(_docker);
   return Promise.resolve(instance);

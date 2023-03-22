@@ -1,4 +1,5 @@
-import { logging, provider } from '/Users/gmelton/work/automate/core/mod.ts';
+import { automate } from '../../deps.ts';
+const { logging } = automate;
 
 // create logger
 const log = logging.Category('provider.automate.ext.docker@0.0.0');
@@ -42,7 +43,8 @@ export type RunValues = {
   };
 };
 
-export class ProviderDocker extends provider.Provider {
+export class ProviderDocker extends automate.provider.Provider {
+  // docker command
   cmd = 'docker';
 
   constructor() {
