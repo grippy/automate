@@ -58,6 +58,8 @@
     - [ ] Figure out how registering template helpers works
 - [ ] `delete` `cli/template/registry-package.json` and do this in the build step
 - [ ] `refactor` cli code and move copypasta into `utils.ts` module.
+- [ ] `README.md` add more details about how Recipe generation works.
+- [ ] `automate build` should handle building nested workspaces
 
 ## alpha-4
 - [ ] `release-recipe` define recipe yaml for release code to github
@@ -67,21 +69,21 @@
     - DENO_VERSION
 - [ ] Publish release version 0.0.0 as git tag
 
-# alpha-5
+## alpha-5
 - [ ] Build packages stored on the web
     - [ ] `Automate.yaml` Convert remote dependencies from relative to absolute
 
+## Backlog
 
-
-
-## Package Stuff
-## Automate.yaml
-## CLI Stuff
-## Refactor
-## Testing
+### Package Stuff
+### Automate.yaml
+### CLI Stuff
+- [ ] `AUTOMATE_WORKSPACE`
+### Refactor
+### Testing
 - [ ] More core tests are needed.
-## Packaging Automate CLI
+### Packaging Automate CLI
 - [ ] Docs around installing this tool
 - [ ] Figure out how we package the automate cli and have it generate `deno` commands.
-## Docker Runtime Container
+### Docker Runtime Container
 - [ ] Docker for local development

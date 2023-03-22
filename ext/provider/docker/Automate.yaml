@@ -1,0 +1,19 @@
+# Package details...
+package:
+  type: provider
+  namespace: automate.ext
+  name: docker
+  version: "0.0.0"
+  description: |
+    Generates `docker` commands and runs them for common docker tasks.
+
+  # Deno permissions
+  # https://deno.land/manual@v1.30.3/basics/permissions
+  permissions: [--allow-read, --allow-env, --allow-run=docker]
+
+# Default values go here...
+values:
+  provider:
+    docker:
+      build:
+      run:

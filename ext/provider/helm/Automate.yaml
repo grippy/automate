@@ -1,0 +1,34 @@
+# Package details...
+package:
+  type: provider
+  namespace: automate.ext
+  name: helm
+  version: "0.0.0"
+  description: |
+    Run helm commands using `alpine/k8s` docker container.
+
+  # Deno permissions
+  # https://deno.land/manual@v1.30.3/basics/permissions
+  permissions: [--allow-read, --allow-env, --allow-run]
+
+# default values go here...
+values:
+  provider:
+    helm:
+      repo:
+        # bitnami: https://charts.bitnami.com/bitnami
+        # flags:
+        #   --kubeconfig={{ values.kubeconfig }}
+      install:
+        # release_name: automate-ext-nginx-test
+        # chart: bitnami/nginx
+        # flags:
+        #   --kubeconfig={{ values.kubeconfig }}
+      uninstall:
+        # release_name: automate-ext-nginx-test
+        # flags:
+        #   --kubeconfig={{ values.kubeconfig }}
+    docker:
+      run:
+        # https://hub.docker.com/r/alpine/k8s/tags
+        image: alpine/k8s:1.24.12

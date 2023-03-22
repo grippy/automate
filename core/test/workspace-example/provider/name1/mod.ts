@@ -4,10 +4,11 @@ import { logging, provider } from '../../../../mod.ts';
 const log = logging.Category('provider.test.workspace.example.name1@0.0.0');
 type Values = Record<string, unknown>;
 
-class ProviderName1 implements provider.Provider {
+class ProviderName1 extends provider.Provider {
   greeting: string;
 
   constructor(greeting: string) {
+    super();
     this.greeting = greeting;
   }
 

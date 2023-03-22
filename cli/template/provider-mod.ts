@@ -3,23 +3,13 @@ import { logging, provider } from '{{ pack.registry.automateCoreMod }}';
 // create logger
 const log = logging.Category('{{ pack.name }}');
 
-// Provider Notes:
-// This is an example provider to get you started
-// Provider commands (functions) have the following characteristics.
-// - A function may or not be async
-// - A function may not define any input arguments
-// - A function may take a single input argument of type Values.
-// - Synchronous function should T or void
-// - Async functions should return Promise<T>
-//
-// Use ENV variables to initialize runtime values.
-// To read ENV variable: `Deno.env.get("MY_VAR")`
-
 type Values = Record<string, unknown>;
 
-class {{ pack.registry.providerClassName }} implements provider.Provider {
+class {{ pack.registry.providerClassName }} extends provider.Provider {
 
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   // deno-lint-ignore require-await
   async cmd1(values: Values): Promise<string> {

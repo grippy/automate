@@ -124,8 +124,6 @@ const action = async (
   // deno-lint-ignore no-explicit-any
   options: any,
   path: string,
-  name?: string,
-  namespace?: string,
 ) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
@@ -164,6 +162,7 @@ const action = async (
   // use absolute path from here on out...
   path = Deno.realPathSync(path);
 
+  let namespace = options.namespace;
   if (namespace === undefined) {
     namespace = 'my.namespace';
   }
@@ -173,6 +172,7 @@ const action = async (
     );
   }
 
+  let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
     if (parts.length > 1) {
@@ -236,11 +236,11 @@ const action = async (
 export const init = new cliffy.Command()
   .description('Init new recipe package.')
   .arguments('<path:string>')
+  .option('-n, --name <name:string>', 'Set recipe package name')
   .option(
-    '--namespace <namespace:string>',
+    '-ns, --namespace <namespace:string>',
     'Set recipe package namespace',
   )
-  .option('-n, --name <name:string>', 'Set recipe package name')
   .option(
     '-f, --force [force:boolean]',
     'Force create package if it already exists',

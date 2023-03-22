@@ -5,8 +5,10 @@ const log = logging.Category('provider.test.workspace.example.name3@0.0.0');
 
 type Values = Record<string, unknown>;
 
-class ProviderName3 implements provider.Provider {
-  constructor() {}
+class ProviderName3 extends provider.Provider {
+  constructor() {
+    super();
+  }
 
   // deno-lint-ignore require-await
   async cmd1(values: Values): Promise<string> {

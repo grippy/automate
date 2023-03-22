@@ -1,0 +1,19 @@
+provider:
+  docker:
+    run:
+      image: hello-world:linux
+      options:
+        - "-v ~/.aws:/root/.aws:ro"
+        - "-e ENV1={{ env.ENV1 }}"
+    build:
+      registry:
+        [
+          registry.service.flipboard.com,
+          registry-dmz.service.flipboard.com,
+          792860931134.dkr.ecr.us-east-1.amazonaws.com,
+        ]
+      name: my-name,
+      context: ../,
+      dockerfile: ./Dockerfile,
+      tag: []
+      env: []

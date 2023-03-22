@@ -99,7 +99,7 @@ const action = async (
     env: env,
   });
   const status = await p.status();
-  log.info(`exit run cmd status ${status.code}`);
+  log.info(`Exit run cmd status ${status.code}`);
   Deno.exit(status.code);
 };
 
