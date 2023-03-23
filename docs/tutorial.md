@@ -88,7 +88,7 @@ values:
       run:
 ```
 
-You'll notice we have Values section. "Ok, what's this do, exactly?"
+You'll notice we have a `values` section. "Ok, what's this do, exactly?"
 
 This is something we borrowed from Helm. You know how we can pass multiple values files for a chart and they're merged into a single hierarchical object?
 
@@ -155,7 +155,7 @@ For now, use `my` to define hard coded states we bind to the provider values tre
 
 Let's see how we map YAML `values` to TypeScript types:
 
-```
+```yaml
 provider:
   thing:
     one:
@@ -193,7 +193,7 @@ async one(values: ThingValues): Promise<string> {
 
 ## Provider Example
 
-To get started writing a provider you can run the following command to generate an Automate provider package. For example, let's create new `thing` package in the current directory, with the following namespace:
+To get started writing a provider you can run the following command to generate an Automate provider package. For example, let's create new `thing` provider package in the current directory, with the following namespace:
 
 ```
 automate provider init ./thing --namespace=example.org
@@ -207,7 +207,7 @@ We just created a few files:
 
 ### Build ThingProvider
 
-There's a required build step which auto-generates `Provider CLI` wrapper for your new class.
+There's a required build step which auto-generates a `CLI` wrapper for your new class.
 
 From the `./thing` directory, run the following command:
 
@@ -239,7 +239,7 @@ This displays the currently installed packages.
 From here, we can see how things are named. If we copy and paste the ThingProvider package name we can then show its details:
 
 ```
-automate provider shot provider.example.org.thing@0.0.0
+automate provider show provider.example.org.thing@0.0.0
 ```
 
 Nothing super-special. Just some paths and another version of the config (We need to pick which one we want to use delete the duplicate).
@@ -250,7 +250,7 @@ By default, initializing a new Provider module displays the various sync/async w
 
 Let's modify `thing/mod.ts` and make `ThingProvider` look something like this:
 
-```ts
+```typescript
 import {
   logging,
   provider,
