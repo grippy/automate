@@ -571,14 +571,16 @@ recipe:
     install:
       - if: (state.release_exists && "{{ values.my.helm.install.force }}" === "true")
         name: Helm uninstall release
-        run:provider.helm.uninstall:
-          in:
-          out:
-            state: previous_release
+        run:
+          provider.helm.uninstall:
+            in:
+            out:
+              state: previous_release
       - if: (!state.release_exists)
         name: Helm install release
-        run:provider.helm.install:
-          in:
-          out:
-            state: next_release
+        run:
+          provider.helm.install:
+            in:
+            out:
+              state: next_release
 ```
