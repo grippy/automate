@@ -37,8 +37,13 @@ Here are the high-level ideas we're going to go over in this tutorial.
 
 Automate only runs on Linux/MacOS for now...
 
-- Install `Deno`
-- Install `automate` cli
+- [Install `Deno`](https://deno.land/manual@v1.32.0/getting_started/installation)
+- Install `automate` cli:
+
+  ```
+  git clone https://github.com/grippy/automate.git
+  deno task install-cli
+  ```
 
 ## Automate Config
 
