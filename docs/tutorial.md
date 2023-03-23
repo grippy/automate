@@ -561,13 +561,14 @@ recipe:
               file: ./kubeconfig
     check:
       - name: Check if helm release exists
-        run:provider.helm.get:
-          in:
-            provider:
-              helm:
-                get:
-                  release_name: {{ values.my.helm.release_name }}
-          out: release_exists
+        run:
+          provider.helm.get:
+            in:
+              provider:
+                helm:
+                  get:
+                    release_name: {{ values.my.helm.release_name }}
+            out: release_exists
     install:
       - if: (state.release_exists && "{{ values.my.helm.install.force }}" === "true")
         name: Helm uninstall release
