@@ -11,8 +11,8 @@
     "lint": "deno lint core/ && deno lint cli/ --ignore=cli/template/",
     "test-lint-registry-cache": "./scripts/deno-lint-registry-cache.sh",
     "test-cli": "deno test --allow-read --allow-env ./cli",
-    "test-cli-watch": "deno test --allow-read --allow-env --watch ./cli",
-    "test-core": "deno test --allow-read --allow-env ./core",
-    "test-core-watch": "deno test --allow-read --allow-env --watch ./core"
+    "test-cli-watch": "deno test --lock-write --allow-read --allow-env --watch ./cli",
+    "test-core": "deno test --lock-write --allow-read --allow-env ./core",
+    "test-core-watch": "deno test --lock-write --allow-read --allow-env --watch ./core"
   }
 }

@@ -26,7 +26,6 @@ package:
   # Deno permissions
   # https://deno.land/manual@v1.30.3/basics/permissions
   permissions: [
-    --allow-read
     # --allow-env=<allow-env>,
     # --allow-sys=<allow-sys>,
     # --allow-hrtime,
@@ -36,6 +35,9 @@ package:
     # --allow-run=<allow-run>,
     # --allow-write=<allow-write>,
     # --allow-all,
+    --allow-read,
+    --allow-env,
+    --allow-run
   ]
 
 # Package dependencies...
