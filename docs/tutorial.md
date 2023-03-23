@@ -532,16 +532,18 @@ values:
       release_name: my-app
       flags:
         - '--kubeconfig=./.kube/config'
-  docker:
-    run:
-      options:
-        - '--workdir={{ values.my.docker.workdir }}
-        - '-v ./:{{ values.my.docker.workdir }}'
-  helm:
-    get:
-      namespace: {{ values.my.helm.namespace }}
-      name: {{ values.my.helm.release_name }}
-      flags: {{ values.my.helm.flags }}
+
+  provider:
+    docker:
+      run:
+        options:
+          - '--workdir={{ values.my.docker.workdir }}
+          - '-v ./:{{ values.my.docker.workdir }}'
+    helm:
+      get:
+        namespace: {{ values.my.helm.namespace }}
+        name: {{ values.my.helm.release_name }}
+        flags: {{ values.my.helm.flags }}
 
 recipe:
   steps:
