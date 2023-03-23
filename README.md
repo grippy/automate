@@ -35,7 +35,7 @@ While Automate only requires Deno, you might find these additional dependencies 
 
 - `docker`: so we can run commands inside containers without having to install additional dependencies on the local file system.
 - `dprint`: for developing Automate code. (Eventually, we can run this as Automate provider package.)
-   The VSCode config in this repo uses dprint. You'll want to install [this plugin here](https://marketplace.visualstudio.com/items?itemName=dprint.dprint).
+  The VSCode config in this repo uses dprint. You'll want to install [this plugin here](https://marketplace.visualstudio.com/items?itemName=dprint.dprint).
 
 # Automate Packages
 

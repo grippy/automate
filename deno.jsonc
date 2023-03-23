@@ -1,6 +1,8 @@
 {
   "tasks": {
     "dprint-check": "dprint output-file-paths $ARGS | sort && dprint check",
+    "dprint-diff-markdown": "dprint fmt --verbose *.md **/*.md **/**/*.md **/**/**/*.md --diff",
+    "dprint-fmt-markdown": "dprint fmt *.md **/*.md **/**/*.md **/**/**/*.md",
     "cli-build-ext-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/ext",
     "cli-build-test-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/core/test/workspace-example",
     "cli-test-ext-workspace": "deno run -A $PWD/cli/main.ts test $PWD/ext",
