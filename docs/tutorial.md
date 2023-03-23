@@ -7,6 +7,8 @@ This tutorial assumes you're familiar with the high-level concepts.
 
 Here are the high-level ideas we're going to go over in this tutorial.
 
+<!-- dprint-ignore-start -->
+
 <!-- TOC start -->
 - [Install `automate`](#install-automate)
 - [Automate Config](#automate-config)
@@ -27,8 +29,9 @@ Here are the high-level ideas we're going to go over in this tutorial.
     - [Build Recipe Example](#build-recipe-example)
     - [Run Recipe Example](#run-recipe-example)
     - [Complex Recipe Example](#complex-recipe-example)
-
 <!-- TOC end -->
+
+<!-- dprint-ignore-end -->
 
 ## Install `automate`
 
@@ -63,7 +66,6 @@ These come in two flavors.
 #### Provider
 
 ```yaml
-
 # This describes a provider for calling `docker run` commands
 package:
   type: provider
@@ -173,7 +175,7 @@ type ThingValues = {
       };
       two?: {
         likes?: string[];
-      }
+      };
     };
   };
 };
@@ -193,6 +195,7 @@ automate provider init ./thing --namespace=example.org
 ```
 
 We just created a few files:
+
 - `Automate.yaml` which describes your provider package.
 - `mod.ts` which is the bare bones class named `ThingProvider` and few command (automate terminology for a class method) examples.
 - `mod_test.ts` which contains a silly test file for asserting `ThingProvider` inputs and outputs.
@@ -218,7 +221,7 @@ Now, what just happened?
 
 ### Provider Registry
 
-> *FYI: These commands don't currently exist for a Recipes yet.*
+> _FYI: These commands don't currently exist for a Recipes yet._
 
 Let's take a looks at the Provider Registry to see what's there:
 
@@ -243,7 +246,10 @@ By default, initializing a new Provider module displays the various sync/async w
 Let's modify `thing/mod.ts` and make `ThingProvider` look something like this:
 
 ```ts
-import { logging, provider } from 'https://raw.githubusercontent.com/myorg/myrepo@0.0.1/automate/core/mod.ts';
+import {
+  logging,
+  provider,
+} from 'https://raw.githubusercontent.com/myorg/myrepo@0.0.1/automate/core/mod.ts';
 
 // create logger
 const log = logging.Category('provider.example.org.thing@0.0.0');
@@ -260,7 +266,7 @@ type ThingValues = {
       };
       two?: {
         likes?: string[];
-      }
+      };
     };
   };
 };
@@ -280,15 +286,13 @@ class ThingProvider extends provider.Provider {
   two(values: ThingValues): string {
     log.debug(`one called w/ ${values}`);
     const _likes = values.provider.things.one.likes || [];
-    return 'OK'
+    return 'OK';
   }
-
 }
 
 // All packages export this function...
 // deno-lint-ignore require-await
 export const initializeProvider = async (): Promise<provider.Provider> => {
-
   // Notes:
   //
   // 1. This is where you'd initialize any dependencies
@@ -302,7 +306,6 @@ export const initializeProvider = async (): Promise<provider.Provider> => {
   const instance = new ThingProvider();
   return Promise.resolve(instance);
 };
-
 ```
 
 How you define the input types is completely up to. You can have one type that describes all the commands or you can break each command out with its own type. This example shares a single type.
@@ -386,6 +389,7 @@ automate recipe init ./something --namespace=example.org
 ```
 
 We just created a single new file:
+
 - `Automate.yaml` which describes your recipe package.
 
 ### Modify Recipe Example
@@ -453,7 +457,9 @@ This demos some additional recipe features.
 In code, we convert this run command to something like this:
 
 ```typescript
-const result = await provider.thing.one({provider: {thing: {one: {likes: ['stuff', 'otherstuff']}}}});
+const result = await provider.thing.one({
+  provider: { thing: { one: { likes: ['stuff', 'otherstuff'] } } },
+});
 ```
 
 ### Build Recipe Example
@@ -568,5 +574,4 @@ recipe:
           in:
           out:
             state: next_release
-
 ```

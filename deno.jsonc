@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dprint-check": "./scripts/dprint-check.sh",
+    "dprint-check": "dprint output-file-paths $ARGS | sort && dprint check",
     "cli-build-ext-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/ext",
     "cli-build-test-workspace": "deno run -A $PWD/cli/main.ts clean -f && deno run -A $PWD/cli/main.ts build $PWD/core/test/workspace-example",
     "cli-test-ext-workspace": "deno run -A $PWD/cli/main.ts test $PWD/ext",
