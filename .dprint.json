@@ -16,6 +16,9 @@
     "./core/**/**/*.ts",
     "./core/**/*.ts",
     "./core/*.ts",
+    "./ext/**/**/*.ts",
+    "./ext/**/*.ts",
+    "./ext/*.ts",
     "**/*.{ts,tsx,js,json,jsx,cjs,mjs,json,md}"
   ],
   "excludes": [

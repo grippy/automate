@@ -1,0 +1,11 @@
+# Helm provider input values....
+
+provider:
+  helm:
+    repo:
+      bitnami: https://charts.bitnami.com/bitnami
+    install:
+      chart: bitnami/nginx
+      release_name: automate-nginx-test
+    uninstall:
+      release_name: automate-nginx-test

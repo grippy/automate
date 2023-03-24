@@ -26,7 +26,6 @@ package:
   # Deno permissions
   # https://deno.land/manual@v1.30.3/basics/permissions
   permissions: [
-    --allow-read
     # --allow-env=<allow-env>,
     # --allow-sys=<allow-sys>,
     # --allow-hrtime,
@@ -36,6 +35,9 @@ package:
     # --allow-run=<allow-run>,
     # --allow-write=<allow-write>,
     # --allow-all,
+    --allow-read,
+    --allow-env,
+    --allow-run
   ]
 
 # Package dependencies...
@@ -79,9 +81,7 @@ provider:
 
 /* README */
 const readmeFileName = 'README.md';
-const readme = `
-# Provider: {{ pack.name }}
-`;
+const readme = `# Provider: {{ pack.name }}`;
 
 type WriteFile = {
   comment: string;
@@ -118,8 +118,6 @@ const action = async (
   // deno-lint-ignore no-explicit-any
   options: any,
   path: string,
-  name?: string,
-  namespace?: string,
 ) => {
   if (path === '/') {
     throw new Error("Writing to root isn't support for this command!");
@@ -158,6 +156,7 @@ const action = async (
 
   // Get the name/namespace of the project.
   // and pick a default it doesn't exist.
+  let namespace = options.namespace;
   if (namespace === undefined) {
     namespace = 'my.namespace';
   }
@@ -166,7 +165,7 @@ const action = async (
       'Package namespace should only contain alpha-numeric characters or periods. Namespace must not start or end with periods.',
     );
   }
-
+  let name = options.name;
   if (name === undefined) {
     const parts = path.split('/');
     if (parts.length > 1) {
@@ -255,11 +254,11 @@ const action = async (
 export const init = new cliffy.Command()
   .description('Init new provider package.')
   .arguments('<path:string>')
+  .option('-n, --name <name:string>', 'Set provider package name')
   .option(
-    '--namespace <namespace:string>',
+    '-ns, --namespace <namespace:string>',
     'Set provider package namespace',
   )
-  .option('-n, --name <name:string>', 'Set provider package name')
   .option(
     '-f, --force [force:boolean]',
     'Force create package if it already exists',

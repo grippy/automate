@@ -93,6 +93,11 @@ jobs:
       - name: Run `automate recipe init`
         run: automate recipe init /tmp/github.action/recipe/bar --namespace=test.github.action
 
-      - name: Run `automate clean`
-        # no-prompt
+      - name: Run `automate test ./ext`
+        run: automate test ./ext
+
+      - name: Run `automate build ./ext`
+        run: automate build ./ext
+
+      - name: Run `automate clean --force`
         run: automate clean --force

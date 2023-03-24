@@ -23,13 +23,19 @@ Automate draws inspiration from the following things:
 - Helm/Hiera for hierarchical values as inputs
 - OpenAPI spec/code generation
 
-# Dependencies
+# Automate Dependencies
 
 Automate currently only has one dependency which is Deno. This enables executing TypeScript inside the Deno runtime.
 
 Deno uses V8 under the hood and features permission based sand-boxing (for example: reading/writing to disk, making networks calls, reading env variables, etc).
 
 Deno installs modules at runtime (sourced locally or from the web) and caches missing modules locally (both similar to how Go works).
+
+While Automate only requires Deno, you might find these additional dependencies come in handy:
+
+- `docker`: so we can run commands inside containers without having to install additional dependencies on the local file system.
+- `dprint`: for developing Automate code. (Eventually, we can run this as Automate provider package.)
+  The VSCode config in this repo uses dprint. You'll want to install [this plugin here](https://marketplace.visualstudio.com/items?itemName=dprint.dprint).
 
 # Automate Packages
 
@@ -40,6 +46,8 @@ This file defines the following:
 - A `workspace` (a collection of local Automate members).
 
 - Or `package` metadata, along with dependencies and where to install additional Automate packages from. Packages describe either provider commands (input and output data types) or recipes.
+
+More details and documentation to come about packages.
 
 # Automate CLI
 
@@ -70,3 +78,9 @@ The `automate` cli features a few useful commands for jumping into things.
 - `automate provider run`: This command runs provider commands. You pass it zero or more `values.yaml` files and define how to save the output.
 
 - `automate recipe run`: This command runs recipes.
+
+## Registry Commands
+
+- `automate provider list`: This command lists all installed providers.
+
+- `automate provider show`: This command shows the registry package details.

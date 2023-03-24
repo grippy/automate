@@ -1,0 +1,4 @@
+workspace:
+  name: ext
+  # list paths to workspace packages
+  members: ["./provider/docker", "./provider/helm"]

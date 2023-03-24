@@ -43,8 +43,9 @@ const mergeValues = function(vals: Values[]): Values {
 };
 
 // Render templates... hacky for now
-// JSON.sringify(values) => render => JSON.parse
-// TODO: iterate values and only
+// JSON.stringify(values) => render => JSON.parse
+// TODO: iterate values and only render properties
+// with template variables.
 const render = function (opts: Opts, values: Values): Values {
   const tmpl = JSON.stringify(values);
   const json = __template.render(tmpl, opts);
@@ -81,10 +82,11 @@ async function {{@../key}}_{{ @index }} ({state, values}: Opts, {provider, recip
 
 // RecipeProvider executes a recipe for a given
 // recipe config
-export class RecipeProvider implements __provider.Provider {
+export class RecipeProvider extends __provider.Provider {
   // recipe we want to run...
   recipe: __recipe.Recipe;
   constructor(recipe: __recipe.Recipe) {
+    super();
     this.recipe = recipe;
   }
 
